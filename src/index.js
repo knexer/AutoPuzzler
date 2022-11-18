@@ -91,7 +91,8 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = "Next player: X";
+    const status = `Minimum playable minesweeper with no win/loss detection.
+    Find the ${this.props.mines} mines on the board.`;
 
     return (
       <div>
