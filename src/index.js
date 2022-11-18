@@ -3,17 +3,27 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { displayedValue: "" };
+  }
+
+  handleClick() {
+    this.setState({ displayedValue: this.props.value });
+    this.props.onClick();
+  }
+
   render() {
     return (
       <button
         className="square"
-        onClick={this.props.onClick}
+        onClick={() => this.handleClick()}
         onContextMenu={(e) => {
           e.preventDefault();
-          this.props.onClick();
+          this.handleClick();
         }}
       >
-        {this.props.value}
+        {this.state.displayedValue}
       </button>
     );
   }
@@ -54,18 +64,10 @@ class Board extends React.Component {
         i--;
       }
     }
-
-    this.state = {
-      squares: Array.from({ length: props.height }, () =>
-        Array(props.width).fill()
-      ),
-    };
   }
 
   handleClick(x, y) {
-    const squares = this.state.squares.slice().map((row) => row.slice());
-    squares[y][x] = this.secretSquares[y][x];
-    this.setState({ squares: squares });
+    // TODO detect win/loss here, update mine count
   }
 
   renderSquare(x, y) {
@@ -75,7 +77,7 @@ class Board extends React.Component {
         y={y} // debug purposes
         key={x}
         onClick={() => this.handleClick(x, y)}
-        value={this.state.squares[y][x]}
+        value={this.secretSquares[y][x]}
       />
     );
   }
