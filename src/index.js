@@ -5,25 +5,39 @@ import "./index.css";
 class Square extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { displayedValue: "" };
+    this.state = { revealed: false, flagged: false };
   }
 
   handleClick() {
-    this.setState({ displayedValue: this.props.value });
+    if (this.state.revealed || this.state.flagged || this.props.locked) return;
+    this.setState({ revealed: true });
     this.props.onClick();
   }
 
+  handleFlag() {
+    if (this.state.revealed || this.props.locked) return;
+    const nextFlagged = !this.state.flagged;
+    this.setState({ flagged: nextFlagged });
+    this.props.onFlag(nextFlagged);
+  }
+
   render() {
+    const value = () => {
+      if (this.state.revealed) return this.props.value;
+      if (this.state.flagged) return "🚩";
+      return "";
+    };
+
     return (
       <button
         className="square"
         onClick={() => this.handleClick()}
         onContextMenu={(e) => {
           e.preventDefault();
-          this.handleClick();
+          this.handleFlag();
         }}
       >
-        {this.state.displayedValue}
+        {value()}
       </button>
     );
   }
@@ -32,14 +46,15 @@ class Square extends React.Component {
 class Board extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { flaggedMines: 0, gameOver: false };
 
     this.secretSquares = Array.from({ length: props.height }, () =>
       Array(props.width).fill(0)
     );
 
     const addMine = (x, y) => {
-      if (this.secretSquares[y][x] === "X") return false;
-      this.secretSquares[y][x] = "X";
+      if (this.secretSquares[y][x] === "🤯") return false;
+      this.secretSquares[y][x] = "🤯";
 
       for (let dy = -1; dy <= 1; dy++) {
         const newY = y + dy;
@@ -69,7 +84,20 @@ class Board extends React.Component {
   }
 
   handleClick(x, y) {
-    // TODO detect win/loss here, update mine count
+    // TODO if all non-mine squares are revealed, game is win.
+    // But we can't check the state of child components??
+    // React seems to want me to 'lift state up' i.e. make a god class.
+    // But I suspect the real answer is that gameplay code doesn't belong in React.
+
+    if (this.secretSquares[y][x] === "🤯") {
+      this.setState({ gameOver: true });
+    }
+  }
+
+  handleFlag(x, y, flagged) {
+    this.setState({
+      flaggedMines: this.state.flaggedMines + (flagged ? 1 : -1),
+    });
   }
 
   renderSquare(x, y) {
@@ -79,6 +107,8 @@ class Board extends React.Component {
         y={y} // debug purposes
         key={x}
         onClick={() => this.handleClick(x, y)}
+        onFlag={(flagged) => this.handleFlag(x, y, flagged)}
+        locked={this.state.gameOver}
         value={this.secretSquares[y][x]}
       />
     );
@@ -95,8 +125,9 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = `Minimum playable minesweeper with no win/loss detection.
-    Find the ${this.props.mines} mines on the board.`;
+    const status = this.state.gameOver
+      ? "Game Over!"
+      : `Found ${this.state.flaggedMines} of ${this.props.mines} mines on the board.`;
 
     return (
       <div>
