@@ -58,10 +58,12 @@ class Board extends React.Component {
     };
 
     for (let i = 0; i < props.mines; i++) {
-      const x = Math.floor(Math.random() * props.width);
-      const y = Math.floor(Math.random() * props.height);
-      if (!addMine(x, y)) {
-        i--;
+      let attempts = 0;
+      while (attempts < 10) {
+        const x = Math.floor(Math.random() * props.width);
+        const y = Math.floor(Math.random() * props.height);
+        if (addMine(x, y)) break;
+        attempts++;
       }
     }
   }
