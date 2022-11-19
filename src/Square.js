@@ -2,17 +2,10 @@ import React from "react";
 
 export default class Square extends React.Component {
   handleClick() {
-    if (
-      this.props.data.revealed ||
-      this.props.data.flagged ||
-      this.props.locked
-    )
-      return;
     this.props.onClick();
   }
 
   handleFlag() {
-    if (this.props.data.revealed || this.props.locked) return;
     this.props.onFlag(!this.props.data.flagged);
   }
 
