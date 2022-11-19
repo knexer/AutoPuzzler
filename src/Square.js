@@ -9,9 +9,20 @@ export default class Square extends React.Component {
     this.props.onFlag(!this.props.data.flagged);
   }
 
+  isInteractive = () => {
+    if (this.props.gameWin || this.props.gameLose) return false;
+    return !this.props.data.revealed && !this.props.data.flagged;
+  };
+
   render() {
     const display = () => {
-      if (this.props.data.revealed && this.props.data.mine) return "🤯";
+      if (this.props.data.flagged) return "🚩";
+      if (this.props.data.mine) {
+        if (this.props.data.revealed) return "🤯";
+        if (this.props.gameWin) return "🚩";
+        if (this.props.gameLose) return "💣";
+      }
+
       if (this.props.data.revealed) {
         return (
           <span className={`adjacent-mines-${this.props.data.adjacentMines}`}>
@@ -19,7 +30,6 @@ export default class Square extends React.Component {
           </span>
         );
       }
-      if (this.props.data.flagged) return "🚩";
       return "";
     };
 
@@ -27,9 +37,7 @@ export default class Square extends React.Component {
       <button
         className={
           "square" +
-          (this.props.data.revealed || this.props.data.flagged
-            ? " revealed-square"
-            : " unrevealed-square")
+          (this.isInteractive() ? " unrevealed-square" : " revealed-square")
         }
         onClick={() => this.handleClick()}
         onContextMenu={(e) => {

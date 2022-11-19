@@ -155,7 +155,8 @@ export default class Board extends React.Component {
         key={y * this.props.width + x}
         onClick={() => this.handleClick(x, y)}
         onFlag={(flagged) => this.handleFlag(x, y, flagged)}
-        locked={this.state.gameWin || this.state.gameLose}
+        gameWin={this.state.gameWin}
+        gameLose={this.state.gameLose}
         data={this.state.squareData[y][x]}
       />
     );
