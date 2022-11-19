@@ -80,6 +80,17 @@ ul {
 
 .game {
   display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.right-panel {
+  display: flex;
   flex-direction: column;
 }
 

@@ -91,16 +91,14 @@ class Game extends React.Component {
         </div>
         <div className="right-panel">
           Automation options:
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={this.state.revealOnZero}
-                onChange={this.handleRevealOnZeroChange}
-              ></input>
-              {"Reveal adjacent mines when clicking a " + 0 + "."}
-            </label>
-          </div>
+          <label>
+            <input
+              type="checkbox"
+              checked={this.state.revealOnZero}
+              onChange={this.handleRevealOnZeroChange}
+            ></input>
+            {"Reveal adjacent mines when clicking a " + 0 + "."}
+          </label>
         </div>
       </div>
     );

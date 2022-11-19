@@ -166,7 +166,7 @@ export default class Board extends React.Component {
     const status = () => {
       if (this.state.gameLose) return "Mine located the hard way - you lose!";
       if (this.state.gameWin) return "All mines flagged - you win!";
-      return `Flagged ${this.state.flaggedMines} of ${this.props.mines} mines on the board.`;
+      return `Flagged ${this.state.flaggedMines} of ${this.props.mines} mines.`;
     };
 
     return (
