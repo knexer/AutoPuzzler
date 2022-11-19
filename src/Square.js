@@ -18,8 +18,14 @@ export default class Square extends React.Component {
 
   render() {
     const display = () => {
-      if (this.props.data.revealed)
-        return this.props.data.mine ? "🤯" : this.props.data.adjacentMines;
+      if (this.props.data.revealed && this.props.data.mine) return "🤯";
+      if (this.props.data.revealed) {
+        return (
+          <span className={`adjacent-mines-${this.props.data.adjacentMines}`}>
+            {this.props.data.adjacentMines}
+          </span>
+        );
+      }
       if (this.props.data.flagged) return "🚩";
       return "";
     };

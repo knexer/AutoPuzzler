@@ -50,6 +50,34 @@ ul {
   background: #ddd;
 }
 
+.adjacent-mines-0 {
+  color: #999;
+}
+.adjacent-mines-1 {
+  color: rgb(95, 125, 200);
+}
+.adjacent-mines-2 {
+  color: rgb(95, 200, 95);
+}
+.adjacent-mines-3 {
+  color: rgb(200, 95, 95);
+}
+.adjacent-mines-4 {
+  color: rgb(45, 60, 130);
+}
+.adjacent-mines-5 {
+  color: rgb(45, 130, 45);
+}
+.adjacent-mines-6 {
+  color: rgb(130, 45, 45);
+}
+.adjacent-mines-7 {
+  color: #333;
+}
+.adjacent-mines-8 {
+  color: #000;
+}
+
 .game {
   display: flex;
   flex-direction: column;
