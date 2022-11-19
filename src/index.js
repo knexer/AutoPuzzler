@@ -16,6 +16,8 @@ class Game extends React.Component {
       gameId: 0,
       autoRevealEnabled: false,
       autoRevealMax: 0,
+      safeAutoRevealEnabled: false,
+      safeAutoRevealMax: 0,
     };
   }
 
@@ -51,6 +53,11 @@ class Game extends React.Component {
               mines={this.state.mines}
               autoReveal={
                 this.state.autoRevealEnabled ? this.state.autoRevealMax : -1
+              }
+              safeAutoReveal={
+                this.state.safeAutoRevealEnabled
+                  ? this.state.safeAutoRevealMax
+                  : -1
               }
               key={this.state.gameId}
             />
@@ -100,7 +107,7 @@ class Game extends React.Component {
                 })
               }
             ></input>
-            Reveal adjacent mines when clicking a revealed square with up to{" "}
+            Reveal adjacent squares when clicking a revealed square with up to{" "}
             <input
               type="number"
               value={this.state.autoRevealMax}
@@ -112,6 +119,29 @@ class Game extends React.Component {
               disabled={!this.state.autoRevealEnabled}
             />{" "}
             adjacent mines.
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={this.state.safeAutoRevealEnabled}
+              onChange={() =>
+                this.setState({
+                  safeAutoRevealEnabled: !this.state.safeAutoRevealEnabled,
+                })
+              }
+            ></input>
+            Reveal adjacent squares when clicking a revealed square with up to{" "}
+            <input
+              type="number"
+              value={this.state.safeAutoRevealMax}
+              onChange={(e) =>
+                this.setState({ safeAutoRevealMax: parseInt(e.target.value) })
+              }
+              min="0"
+              max="7"
+              disabled={!this.state.safeAutoRevealEnabled}
+            />{" "}
+            adjacent <em>flagged</em> mines.
           </label>
         </div>
       </div>

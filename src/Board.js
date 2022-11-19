@@ -104,20 +104,29 @@ export default class Board extends React.Component {
       }
     };
 
+    const revealAdjacentSquares = () => {
+      for (let adjacentSquare of adjacentSquares(this.state.squareData, x, y)) {
+        if (!adjacentSquare.square.revealed && !adjacentSquare.square.flagged) {
+          revealSquare(adjacentSquare.x, adjacentSquare.y);
+        }
+      }
+    };
+
     if (squareDatum.revealed) {
-      if (this.props.autoReveal >= squareDatum.adjacentMines) {
+      if (this.props.safeAutoReveal >= squareDatum.adjacentMines) {
+        let adjacentFlagged = 0;
         for (let adjacentSquare of adjacentSquares(
           this.state.squareData,
           x,
           y
         )) {
-          if (
-            !adjacentSquare.square.revealed &&
-            !adjacentSquare.square.flagged
-          ) {
-            revealSquare(adjacentSquare.x, adjacentSquare.y);
-          }
+          if (adjacentSquare.square.flagged) adjacentFlagged++;
         }
+        if (adjacentFlagged >= squareDatum.adjacentMines) {
+          revealAdjacentSquares();
+        }
+      } else if (this.props.autoReveal >= squareDatum.adjacentMines) {
+        revealAdjacentSquares();
       }
     }
 
