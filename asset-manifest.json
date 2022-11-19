@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/auto-puzzler/static/css/main.50592fa8.css",
-    "main.js": "/auto-puzzler/static/js/main.979e27ab.js",
+    "main.css": "/auto-puzzler/static/css/main.c22d5262.css",
+    "main.js": "/auto-puzzler/static/js/main.90d19caa.js",
     "index.html": "/auto-puzzler/index.html",
-    "main.50592fa8.css.map": "/auto-puzzler/static/css/main.50592fa8.css.map",
-    "main.979e27ab.js.map": "/auto-puzzler/static/js/main.979e27ab.js.map"
+    "main.c22d5262.css.map": "/auto-puzzler/static/css/main.c22d5262.css.map",
+    "main.90d19caa.js.map": "/auto-puzzler/static/js/main.90d19caa.js.map"
   },
   "entrypoints": [
-    "static/css/main.50592fa8.css",
-    "static/js/main.979e27ab.js"
+    "static/css/main.c22d5262.css",
+    "static/js/main.90d19caa.js"
   ]
 }
