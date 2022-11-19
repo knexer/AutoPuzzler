@@ -14,7 +14,7 @@ class Game extends React.Component {
       mines: 3,
       nextMines: 3,
       gameId: 0,
-      revealOnZero: false,
+      autoReveal: Array(9).fill(false),
     };
   }
 
@@ -39,8 +39,25 @@ class Game extends React.Component {
     });
   };
 
-  handleRevealOnZeroChange = (e) => {
-    this.setState({ revealOnZero: !this.state.revealOnZero });
+  toggleAutoReveal = (adjacentMines) => {
+    this.setState((prevState) => ({
+      autoReveal: prevState.autoReveal.map((val, i) =>
+        i === adjacentMines ? !val : val
+      ),
+    }));
+  };
+
+  renderAutoRevealCheckbox = (adjacentMines) => {
+    return (
+      <label key={"auto-reveal-" + adjacentMines}>
+        <input
+          type="checkbox"
+          checked={this.state.autoReveal[adjacentMines]}
+          onChange={() => this.toggleAutoReveal(adjacentMines)}
+        ></input>
+        {"Reveal adjacent mines when clicking a " + adjacentMines + "."}
+      </label>
+    );
   };
 
   render() {
@@ -52,7 +69,7 @@ class Game extends React.Component {
               width={this.state.width}
               height={this.state.height}
               mines={this.state.mines}
-              revealOnZero={this.state.revealOnZero}
+              autoReveal={this.state.autoReveal}
               key={this.state.gameId}
             />
           </div>
@@ -91,14 +108,9 @@ class Game extends React.Component {
         </div>
         <div className="right-panel">
           Automation options:
-          <label>
-            <input
-              type="checkbox"
-              checked={this.state.revealOnZero}
-              onChange={this.handleRevealOnZeroChange}
-            ></input>
-            {"Reveal adjacent mines when clicking a " + 0 + "."}
-          </label>
+          {Array.from({ length: 8 }, (val, i) =>
+            this.renderAutoRevealCheckbox(i)
+          )}
         </div>
       </div>
     );
