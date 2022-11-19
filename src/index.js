@@ -3,28 +3,26 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { revealed: false, flagged: false };
-  }
-
   handleClick() {
-    if (this.state.revealed || this.state.flagged || this.props.locked) return;
-    this.setState({ revealed: true });
+    if (
+      this.props.data.revealed ||
+      this.props.data.flagged ||
+      this.props.locked
+    )
+      return;
     this.props.onClick();
   }
 
   handleFlag() {
-    if (this.state.revealed || this.props.locked) return;
-    const nextFlagged = !this.state.flagged;
-    this.setState({ flagged: nextFlagged });
-    this.props.onFlag(nextFlagged);
+    if (this.props.data.revealed || this.props.locked) return;
+    this.props.onFlag(!this.props.data.flagged);
   }
 
   render() {
-    const value = () => {
-      if (this.state.revealed) return this.props.value;
-      if (this.state.flagged) return "🚩";
+    const display = () => {
+      if (this.props.data.revealed)
+        return this.props.data.mine ? "🤯" : this.props.data.adjacentMines;
+      if (this.props.data.flagged) return "🚩";
       return "";
     };
 
@@ -37,64 +35,95 @@ class Square extends React.Component {
           this.handleFlag();
         }}
       >
-        {value()}
+        {display()}
       </button>
     );
   }
 }
 
-class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { flaggedMines: 0, gameOver: false };
+function makeSquareData(width, height, mines) {
+  const makeSquareDatum = () => {
+    return { mine: false, revealed: false, flagged: false, adjacentMines: 0 };
+  };
 
-    this.secretSquares = Array.from({ length: props.height }, () =>
-      Array(props.width).fill(0)
-    );
+  const squareData = Array.from({ length: height }, () =>
+    Array.from({ length: width }, makeSquareDatum)
+  );
 
-    const addMine = (x, y) => {
-      if (this.secretSquares[y][x] === "🤯") return false;
-      this.secretSquares[y][x] = "🤯";
+  const addMine = (x, y) => {
+    if (squareData[y][x].mine) return false;
+    squareData[y][x].mine = true;
 
-      for (let dy = -1; dy <= 1; dy++) {
-        const newY = y + dy;
-        if (newY < 0 || newY >= this.secretSquares.length) continue;
+    for (let dy = -1; dy <= 1; dy++) {
+      const newY = y + dy;
+      if (newY < 0 || newY >= squareData.length) continue;
 
-        for (let dx = -1; dx <= 1; dx++) {
-          const newX = x + dx;
-          if (newX < 0 || newX >= this.secretSquares[y].length) continue;
-          if (isNaN(this.secretSquares[newY][newX])) continue;
-
-          this.secretSquares[newY][newX]++;
-        }
+      for (let dx = -1; dx <= 1; dx++) {
+        const newX = x + dx;
+        if (newX < 0 || newX >= squareData[y].length) continue;
+        squareData[newY][newX].adjacentMines++;
       }
+    }
 
-      return true;
-    };
+    return true;
+  };
 
-    for (let i = 0; i < props.mines; i++) {
-      let attempts = 0;
-      while (attempts < 10) {
-        const x = Math.floor(Math.random() * props.width);
-        const y = Math.floor(Math.random() * props.height);
-        if (addMine(x, y)) break;
-        attempts++;
-      }
+  for (let i = 0; i < mines; i++) {
+    let attempts = 0;
+    while (attempts < 10) {
+      const x = Math.floor(Math.random() * width);
+      const y = Math.floor(Math.random() * height);
+      if (addMine(x, y)) break;
+      attempts++;
     }
   }
 
-  handleClick(x, y) {
-    // TODO if all non-mine squares are revealed, game is win.
-    // But we can't check the state of child components??
-    // React seems to want me to 'lift state up' i.e. make a god class.
-    // But I suspect the real answer is that gameplay code doesn't belong in React.
+  return squareData;
+}
 
-    if (this.secretSquares[y][x] === "🤯") {
-      this.setState({ gameOver: true });
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      squareData: makeSquareData(props.width, props.height, props.mines),
+      flaggedMines: 0,
+      revealedSpaces: 0,
+      gameWin: false,
+      gameLose: false,
+    };
+  }
+
+  updateSquare(x, y, squareDatum) {
+    this.setState({
+      squareData: this.state.squareData.map((row, i) =>
+        i !== y
+          ? row
+          : row.map((square, j) =>
+              j !== x ? square : { ...square, ...squareDatum }
+            )
+      ),
+    });
+  }
+
+  handleClick(x, y) {
+    this.updateSquare(x, y, { revealed: true });
+    const nextRevealedSpaces = this.state.revealedSpaces + 1;
+    this.setState({ revealedSpaces: nextRevealedSpaces });
+
+    if (this.state.squareData[y][x].mine) {
+      this.setState({ gameLose: true });
+    } else if (
+      nextRevealedSpaces + this.props.mines ===
+      this.props.width * this.props.height
+    ) {
+      this.setState({ gameWin: true });
     }
   }
 
   handleFlag(x, y, flagged) {
+    this.updateSquare(x, y, { flagged: flagged });
+
     this.setState({
       flaggedMines: this.state.flaggedMines + (flagged ? 1 : -1),
     });
@@ -103,13 +132,13 @@ class Board extends React.Component {
   renderSquare(x, y) {
     return (
       <Square
-        x={x} // debug purposes
-        y={y} // debug purposes
-        key={x}
+        x={x}
+        y={y}
+        key={y * this.props.width + x}
         onClick={() => this.handleClick(x, y)}
         onFlag={(flagged) => this.handleFlag(x, y, flagged)}
-        locked={this.state.gameOver}
-        value={this.secretSquares[y][x]}
+        locked={this.state.gameWin || this.state.gameLose}
+        data={this.state.squareData[y][x]}
       />
     );
   }
@@ -125,13 +154,15 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = this.state.gameOver
-      ? "Game Over!"
-      : `Found ${this.state.flaggedMines} of ${this.props.mines} mines on the board.`;
+    const status = () => {
+      if (this.state.gameLose) return "Mine located the hard way - you lose!";
+      if (this.state.gameWin) return "All mines flagged - you win!";
+      return `Flagged ${this.state.flaggedMines} of ${this.props.mines} mines on the board.`;
+    };
 
     return (
       <div>
-        <div className="status">{status}</div>
+        <div className="status">{status()}</div>
         {Array.from({ length: this.props.height }, (element, i) =>
           this.renderRow(i)
         )}
