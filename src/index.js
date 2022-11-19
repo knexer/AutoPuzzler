@@ -14,7 +14,8 @@ class Game extends React.Component {
       mines: 3,
       nextMines: 3,
       gameId: 0,
-      autoReveal: Array(9).fill(false),
+      autoRevealEnabled: false,
+      autoRevealMax: 0,
     };
   }
 
@@ -39,27 +40,6 @@ class Game extends React.Component {
     });
   };
 
-  toggleAutoReveal = (adjacentMines) => {
-    this.setState((prevState) => ({
-      autoReveal: prevState.autoReveal.map((val, i) =>
-        i === adjacentMines ? !val : val
-      ),
-    }));
-  };
-
-  renderAutoRevealCheckbox = (adjacentMines) => {
-    return (
-      <label key={"auto-reveal-" + adjacentMines}>
-        <input
-          type="checkbox"
-          checked={this.state.autoReveal[adjacentMines]}
-          onChange={() => this.toggleAutoReveal(adjacentMines)}
-        ></input>
-        {"Reveal adjacent mines when clicking a " + adjacentMines + "."}
-      </label>
-    );
-  };
-
   render() {
     return (
       <div className="game">
@@ -69,7 +49,9 @@ class Game extends React.Component {
               width={this.state.width}
               height={this.state.height}
               mines={this.state.mines}
-              autoReveal={this.state.autoReveal}
+              autoReveal={
+                this.state.autoRevealEnabled ? this.state.autoRevealMax : -1
+              }
               key={this.state.gameId}
             />
           </div>
@@ -108,9 +90,29 @@ class Game extends React.Component {
         </div>
         <div className="right-panel">
           Automation options:
-          {Array.from({ length: 8 }, (val, i) =>
-            this.renderAutoRevealCheckbox(i)
-          )}
+          <label>
+            <input
+              type="checkbox"
+              checked={this.state.autoRevealEnabled}
+              onChange={() =>
+                this.setState({
+                  autoRevealEnabled: !this.state.autoRevealEnabled,
+                })
+              }
+            ></input>
+            Reveal adjacent mines when clicking a revealed square with up to{" "}
+            <input
+              type="number"
+              value={this.state.autoRevealMax}
+              onChange={(e) =>
+                this.setState({ autoRevealMax: parseInt(e.target.value) })
+              }
+              min="0"
+              max="7"
+              disabled={!this.state.autoRevealEnabled}
+            />{" "}
+            adjacent mines.
+          </label>
         </div>
       </div>
     );

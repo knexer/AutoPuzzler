@@ -105,7 +105,7 @@ export default class Board extends React.Component {
     };
 
     if (squareDatum.revealed) {
-      if (this.props.autoReveal[squareDatum.adjacentMines]) {
+      if (this.props.autoReveal >= squareDatum.adjacentMines) {
         for (let adjacentSquare of adjacentSquares(
           this.state.squareData,
           x,
