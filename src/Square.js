@@ -26,7 +26,12 @@ export default class Square extends React.Component {
 
     return (
       <button
-        className="square"
+        className={
+          "square" +
+          (this.props.data.revealed || this.props.data.flagged
+            ? " revealed-square"
+            : " unrevealed-square")
+        }
         onClick={() => this.handleClick()}
         onContextMenu={(e) => {
           e.preventDefault();

@@ -38,6 +38,14 @@ ul {
   outline: none;
 }
 
+.unrevealed-square:hover {
+  background: #daedff;
+}
+
+.unrevealed-square {
+  background: #f4faff;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }
