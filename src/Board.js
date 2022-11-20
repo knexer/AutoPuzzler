@@ -158,7 +158,7 @@ export default class Board extends React.Component {
       }
     }
     if (adjFlaggable === this.state.squareData[y][x].adjacentMines) {
-      this.flagAdjacentSquares();
+      this.flagAdjacentSquares(x, y);
     }
   }
 
