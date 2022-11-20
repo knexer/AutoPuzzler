@@ -20,6 +20,7 @@ class Game extends React.Component {
       safeAutoRevealMax: 0,
       autoFlagEnabled: false,
       safeAutoFlagEnabled: false,
+      startWithRevealedSquare: false,
     };
   }
 
@@ -80,6 +81,7 @@ class Game extends React.Component {
               width={this.state.width}
               height={this.state.height}
               mines={this.state.mines}
+              startWithRevealedSquare={this.state.startWithRevealedSquare}
               autoReveal={
                 this.state.autoRevealEnabled ? this.state.autoRevealMax : -1
               }
@@ -151,6 +153,10 @@ class Game extends React.Component {
             {this.renderCheckbox("safeAutoFlagEnabled")} Flag adjacent squares
             when right clicking a revealed square that has a number of adjacent
             unrevealed or flagged squares equal to its adjacent mines count.
+          </label>
+          <label>
+            {this.renderCheckbox("startWithRevealedSquare")} Start games with
+            one random square revealed.
           </label>
         </div>
       </div>
