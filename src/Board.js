@@ -63,8 +63,9 @@ export default class Board extends React.Component {
 
   componentDidUpdate() {
     if (
-      this.state.revealedSpaces + this.props.mines ===
+      this.state.revealedSpaces + this.state.flaggedMines ===
         this.props.width * this.props.height &&
+      this.state.flaggedMines === this.props.mines &&
       !this.state.gameWin &&
       !this.state.gameLose
     ) {
