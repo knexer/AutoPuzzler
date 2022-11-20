@@ -42,6 +42,33 @@ class Game extends React.Component {
     });
   };
 
+  renderCheckbox = (name) => {
+    return (
+      <input
+        type="checkbox"
+        checked={this.state[name]}
+        onChange={() =>
+          this.setState({
+            [name]: !this.state[name],
+          })
+        }
+      ></input>
+    );
+  };
+
+  renderAdjacentCount = (enabled, name) => {
+    return (
+      <input
+        type="number"
+        value={this.state[name]}
+        onChange={(e) => this.setState({ [name]: parseInt(e.target.value) })}
+        min="0"
+        max="7"
+        disabled={!this.state[enabled]}
+      />
+    );
+  };
+
   render() {
     return (
       <div className="game">
@@ -98,49 +125,18 @@ class Game extends React.Component {
         <div className="right-panel">
           Automation options:
           <label>
-            <input
-              type="checkbox"
-              checked={this.state.autoRevealEnabled}
-              onChange={() =>
-                this.setState({
-                  autoRevealEnabled: !this.state.autoRevealEnabled,
-                })
-              }
-            ></input>
-            Reveal adjacent squares when clicking a revealed square with up to{" "}
-            <input
-              type="number"
-              value={this.state.autoRevealMax}
-              onChange={(e) =>
-                this.setState({ autoRevealMax: parseInt(e.target.value) })
-              }
-              min="0"
-              max="7"
-              disabled={!this.state.autoRevealEnabled}
-            />{" "}
+            {this.renderCheckbox("autoRevealEnabled")} Reveal adjacent squares
+            when clicking a revealed square with up to{" "}
+            {this.renderAdjacentCount("autoRevealEnabled", "autoRevealMax")}{" "}
             adjacent mines.
           </label>
           <label>
-            <input
-              type="checkbox"
-              checked={this.state.safeAutoRevealEnabled}
-              onChange={() =>
-                this.setState({
-                  safeAutoRevealEnabled: !this.state.safeAutoRevealEnabled,
-                })
-              }
-            ></input>
-            Reveal adjacent squares when clicking a revealed square with up to{" "}
-            <input
-              type="number"
-              value={this.state.safeAutoRevealMax}
-              onChange={(e) =>
-                this.setState({ safeAutoRevealMax: parseInt(e.target.value) })
-              }
-              min="0"
-              max="7"
-              disabled={!this.state.safeAutoRevealEnabled}
-            />{" "}
+            {this.renderCheckbox("safeAutoRevealEnabled")} Reveal adjacent
+            squares when clicking a revealed square with up to{" "}
+            {this.renderAdjacentCount(
+              "safeAutoRevealEnabled",
+              "safeAutoRevealMax"
+            )}{" "}
             adjacent <em>flagged</em> mines.
           </label>
         </div>
