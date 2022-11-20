@@ -18,6 +18,8 @@ class Game extends React.Component {
       autoRevealMax: 0,
       safeAutoRevealEnabled: false,
       safeAutoRevealMax: 0,
+      autoFlagEnabled: false,
+      safeAutoFlagEnabled: false,
     };
   }
 
@@ -86,6 +88,8 @@ class Game extends React.Component {
                   ? this.state.safeAutoRevealMax
                   : -1
               }
+              autoFlag={this.state.autoFlagEnabled}
+              safeAutoFlag={this.state.safeAutoFlagEnabled}
               key={this.state.gameId}
             />
           </div>
@@ -138,6 +142,15 @@ class Game extends React.Component {
               "safeAutoRevealMax"
             )}{" "}
             adjacent <em>flagged</em> mines.
+          </label>
+          <label>
+            {this.renderCheckbox("autoFlagEnabled")} Flag adjacent squares when
+            right clicking a revealed square.
+          </label>
+          <label>
+            {this.renderCheckbox("safeAutoFlagEnabled")} Flag adjacent squares
+            when right clicking a revealed square that has a number of adjacent
+            unrevealed or flagged squares equal to its adjacent mines count.
           </label>
         </div>
       </div>

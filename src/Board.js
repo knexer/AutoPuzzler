@@ -28,8 +28,8 @@ function makeSquareData(width, height, mines) {
     if (squareData[y][x].mine) return false;
     squareData[y][x].mine = true;
 
-    for (let adjacentSquare of adjacentSquares(squareData, x, y)) {
-      adjacentSquare.square.adjacentMines++;
+    for (const adjSquare of adjacentSquares(squareData, x, y)) {
+      adjSquare.square.adjacentMines++;
     }
 
     return true;
@@ -93,6 +93,7 @@ export default class Board extends React.Component {
     const revealSquare = (x, y) => {
       const squareDatum = this.state.squareData[y][x];
       if (squareDatum.revealed) return;
+      if (squareDatum.flagged) return;
 
       this.updateSquare(x, y, { revealed: true });
       this.setState((prevState) => ({
@@ -105,22 +106,16 @@ export default class Board extends React.Component {
     };
 
     const revealAdjacentSquares = () => {
-      for (let adjacentSquare of adjacentSquares(this.state.squareData, x, y)) {
-        if (!adjacentSquare.square.revealed && !adjacentSquare.square.flagged) {
-          revealSquare(adjacentSquare.x, adjacentSquare.y);
-        }
+      for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+        revealSquare(adjSquare.x, adjSquare.y);
       }
     };
 
     if (squareDatum.revealed) {
       if (this.props.safeAutoReveal >= squareDatum.adjacentMines) {
         let adjacentFlagged = 0;
-        for (let adjacentSquare of adjacentSquares(
-          this.state.squareData,
-          x,
-          y
-        )) {
-          if (adjacentSquare.square.flagged) adjacentFlagged++;
+        for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+          if (adjSquare.square.flagged) adjacentFlagged++;
         }
         if (adjacentFlagged >= squareDatum.adjacentMines) {
           revealAdjacentSquares();
@@ -134,19 +129,44 @@ export default class Board extends React.Component {
   }
 
   handleFlag(x, y, flagged) {
-    if (
-      this.state.gameLose ||
-      this.state.gameWin ||
-      this.state.squareData[y][x].revealed
-    ) {
+    if (this.state.gameLose || this.state.gameWin) {
       return;
     }
 
-    this.updateSquare(x, y, { flagged: flagged });
+    const flagSquare = (x, y, flagged) => {
+      if (this.state.squareData[y][x].revealed) return;
+      if (this.state.squareData[y][x].flagged === flagged) return;
 
-    this.setState((prevState) => ({
-      flaggedMines: prevState.flaggedMines + (flagged ? 1 : -1),
-    }));
+      this.updateSquare(x, y, { flagged: flagged });
+
+      this.setState((prevState) => ({
+        flaggedMines: prevState.flaggedMines + (flagged ? 1 : -1),
+      }));
+    };
+
+    const flagAdjacentSquares = () => {
+      for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+        flagSquare(adjSquare.x, adjSquare.y, true);
+      }
+    };
+
+    if (this.state.squareData[y][x].revealed) {
+      if (this.props.safeAutoFlag) {
+        let adjFlaggable = 0;
+        for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+          if (adjSquare.square.flagged || !adjSquare.square.revealed) {
+            adjFlaggable++;
+          }
+        }
+        if (adjFlaggable === this.state.squareData[y][x].adjacentMines) {
+          flagAdjacentSquares();
+        }
+      } else if (this.props.autoFlag) {
+        flagAdjacentSquares();
+      }
+    } else {
+      flagSquare(x, y, flagged);
+    }
   }
 
   renderSquare(x, y) {
