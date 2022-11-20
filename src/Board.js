@@ -85,48 +85,81 @@ export default class Board extends React.Component {
     }));
   }
 
+  revealSquare(x, y) {
+    const squareDatum = this.state.squareData[y][x];
+    if (squareDatum.revealed) return;
+    if (squareDatum.flagged) return;
+
+    this.updateSquare(x, y, { revealed: true });
+    this.setState((prevState) => ({
+      revealedSpaces: prevState.revealedSpaces + 1,
+    }));
+
+    if (squareDatum.mine) {
+      this.setState({ gameLose: true });
+    }
+  }
+
+  revealAdjacentSquares(x, y) {
+    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+      this.revealSquare(adjSquare.x, adjSquare.y);
+    }
+  }
+
+  safeRevealAdjacentSquares(x, y) {
+    let adjacentFlagged = 0;
+    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+      if (adjSquare.square.flagged) adjacentFlagged++;
+    }
+    if (adjacentFlagged >= this.state.squareData[y][x].adjacentMines) {
+      this.revealAdjacentSquares(x, y);
+    }
+  }
+
   handleClick(x, y) {
     const squareDatum = this.state.squareData[y][x];
     if (this.state.gameLose || this.state.gameWin || squareDatum.flagged) {
       return;
     }
 
-    const revealSquare = (x, y) => {
-      const squareDatum = this.state.squareData[y][x];
-      if (squareDatum.revealed) return;
-      if (squareDatum.flagged) return;
-
-      this.updateSquare(x, y, { revealed: true });
-      this.setState((prevState) => ({
-        revealedSpaces: prevState.revealedSpaces + 1,
-      }));
-
-      if (squareDatum.mine) {
-        this.setState({ gameLose: true });
-      }
-    };
-
-    const revealAdjacentSquares = () => {
-      for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-        revealSquare(adjSquare.x, adjSquare.y);
-      }
-    };
-
     if (squareDatum.revealed) {
       if (this.props.safeAutoReveal >= squareDatum.adjacentMines) {
-        let adjacentFlagged = 0;
-        for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-          if (adjSquare.square.flagged) adjacentFlagged++;
-        }
-        if (adjacentFlagged >= squareDatum.adjacentMines) {
-          revealAdjacentSquares();
-        }
+        this.safeRevealAdjacentSquares(x, y);
       } else if (this.props.autoReveal >= squareDatum.adjacentMines) {
-        revealAdjacentSquares();
+        this.revealAdjacentSquares(x, y);
       }
     }
 
-    revealSquare(x, y);
+    this.revealSquare(x, y);
+  }
+
+  flagSquare(x, y, flagged) {
+    if (this.state.squareData[y][x].revealed) return;
+    if (this.state.squareData[y][x].flagged === flagged) return;
+
+    this.updateSquare(x, y, { flagged: flagged });
+
+    this.setState((prevState) => ({
+      flaggedMines: prevState.flaggedMines + (flagged ? 1 : -1),
+    }));
+  }
+
+  flagAdjacentSquares(x, y) {
+    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+      this.flagSquare(adjSquare.x, adjSquare.y, true);
+    }
+  }
+
+  safeFlagAdjacentSquares(x, y) {
+    let adjFlaggable = 0;
+    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
+      if (adjSquare.square.flagged || !adjSquare.square.revealed) {
+        adjFlaggable++;
+      }
+    }
+    if (adjFlaggable === this.state.squareData[y][x].adjacentMines) {
+      this.flagAdjacentSquares();
+    }
   }
 
   handleFlag(x, y, flagged) {
@@ -134,39 +167,14 @@ export default class Board extends React.Component {
       return;
     }
 
-    const flagSquare = (x, y, flagged) => {
-      if (this.state.squareData[y][x].revealed) return;
-      if (this.state.squareData[y][x].flagged === flagged) return;
-
-      this.updateSquare(x, y, { flagged: flagged });
-
-      this.setState((prevState) => ({
-        flaggedMines: prevState.flaggedMines + (flagged ? 1 : -1),
-      }));
-    };
-
-    const flagAdjacentSquares = () => {
-      for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-        flagSquare(adjSquare.x, adjSquare.y, true);
-      }
-    };
-
     if (this.state.squareData[y][x].revealed) {
       if (this.props.safeAutoFlag) {
-        let adjFlaggable = 0;
-        for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-          if (adjSquare.square.flagged || !adjSquare.square.revealed) {
-            adjFlaggable++;
-          }
-        }
-        if (adjFlaggable === this.state.squareData[y][x].adjacentMines) {
-          flagAdjacentSquares();
-        }
+        this.safeFlagAdjacentSquares(x, y);
       } else if (this.props.autoFlag) {
-        flagAdjacentSquares();
+        this.flagAdjacentSquares(x, y);
       }
     } else {
-      flagSquare(x, y, flagged);
+      this.flagSquare(x, y, flagged);
     }
   }
 
