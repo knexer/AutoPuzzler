@@ -91,7 +91,7 @@ export default class Board extends React.Component {
     this.setState({
       intervalId: setInterval(
         this.handleInterval.bind(this),
-        this.props.autoIntervalMs
+        this.props.autoClickIntervalMs
       ),
     });
   }
@@ -116,8 +116,8 @@ export default class Board extends React.Component {
     // let's simulate a left and right click on every revealed square.
     for (const { square, x, y } of this.allSpaces()) {
       if (square.revealed) {
-        this.handleClick(x, y);
-        this.handleFlag(x, y);
+        if (this.props.autoClick) this.handleClick(x, y);
+        if (this.props.autoRightClick) this.handleFlag(x, y);
       }
     }
   }

@@ -22,6 +22,8 @@ class Game extends React.Component {
       safeAutoFlagEnabled: false,
       startWithRevealedSquare: false,
       startWithRevealedZero: false,
+      autoClick: false,
+      autoRightClick: false,
     };
   }
 
@@ -94,7 +96,9 @@ class Game extends React.Component {
               }
               autoFlag={this.state.autoFlagEnabled}
               safeAutoFlag={this.state.safeAutoFlagEnabled}
-              autoIntervalMs={250}
+              autoClick={this.state.autoClick}
+              autoRightClick={this.state.autoRightClick}
+              autoClickIntervalMs={250}
               key={this.state.gameId}
             />
           </div>
@@ -164,6 +168,14 @@ class Game extends React.Component {
           <label>
             {this.renderCheckbox("startWithRevealedZero")} Start games with one
             random square revealed that has no adjacent mines.
+          </label>
+          <label>
+            {this.renderCheckbox("autoClick")} Automatically click every
+            revealed square every 250ms.
+          </label>
+          <label>
+            {this.renderCheckbox("autoRightClick")} Automatically right click
+            every revealed square every 250ms.
           </label>
         </div>
       </div>
