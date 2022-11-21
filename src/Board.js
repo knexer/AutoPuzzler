@@ -83,7 +83,21 @@ export default class Board extends React.Component {
       ),
       gameWin: false,
       gameLose: false,
+      intervalId: 0,
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      intervalId: setInterval(
+        this.handleInterval.bind(this),
+        this.props.autoIntervalMs
+      ),
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId);
   }
 
   componentDidUpdate() {
@@ -95,6 +109,16 @@ export default class Board extends React.Component {
       !this.state.gameLose
     ) {
       this.setState({ gameWin: true });
+    }
+  }
+
+  handleInterval() {
+    // let's simulate a left and right click on every revealed square.
+    for (const { square, x, y } of this.allSpaces()) {
+      if (square.revealed) {
+        this.handleClick(x, y);
+        this.handleFlag(x, y);
+      }
     }
   }
 

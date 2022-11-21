@@ -94,6 +94,7 @@ class Game extends React.Component {
               }
               autoFlag={this.state.autoFlagEnabled}
               safeAutoFlag={this.state.safeAutoFlagEnabled}
+              autoIntervalMs={250}
               key={this.state.gameId}
             />
           </div>
