@@ -15,7 +15,13 @@ function* adjacentSquares(squareData, x, y) {
   }
 }
 
-function makeSquareData(width, height, mines, startWithRevealedSquare) {
+function makeSquareData(
+  width,
+  height,
+  mines,
+  startWithRevealedSquare,
+  startWithRevealedZero
+) {
   const makeSquareDatum = () => {
     return { mine: false, revealed: false, flagged: false, adjacentMines: 0 };
   };
@@ -44,11 +50,17 @@ function makeSquareData(width, height, mines, startWithRevealedSquare) {
       attempts++;
     }
   }
-
-  while (startWithRevealedSquare) {
+  while (startWithRevealedZero || startWithRevealedSquare) {
     const x = Math.floor(Math.random() * width);
     const y = Math.floor(Math.random() * height);
     if (!squareData[y][x].mine) {
+      if (startWithRevealedZero) {
+        if (squareData[y][x].adjacentMines === 0) {
+          squareData[y][x].revealed = true;
+          break;
+        }
+        continue;
+      }
       squareData[y][x].revealed = true;
       break;
     }
@@ -66,7 +78,8 @@ export default class Board extends React.Component {
         props.width,
         props.height,
         props.mines,
-        props.startWithRevealedSquare
+        props.startWithRevealedSquare,
+        props.startWithRevealedZero
       ),
       flaggedMines: 0,
       revealedSpaces: 0,

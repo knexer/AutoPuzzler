@@ -21,6 +21,7 @@ class Game extends React.Component {
       autoFlagEnabled: false,
       safeAutoFlagEnabled: false,
       startWithRevealedSquare: false,
+      startWithRevealedZero: false,
     };
   }
 
@@ -82,6 +83,7 @@ class Game extends React.Component {
               height={this.state.height}
               mines={this.state.mines}
               startWithRevealedSquare={this.state.startWithRevealedSquare}
+              startWithRevealedZero={this.state.startWithRevealedZero}
               autoReveal={
                 this.state.autoRevealEnabled ? this.state.autoRevealMax : -1
               }
@@ -157,6 +159,10 @@ class Game extends React.Component {
           <label>
             {this.renderCheckbox("startWithRevealedSquare")} Start games with
             one random square revealed.
+          </label>
+          <label>
+            {this.renderCheckbox("startWithRevealedZero")} Start games with one
+            random square revealed that has no adjacent mines.
           </label>
         </div>
       </div>
