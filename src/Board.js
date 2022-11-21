@@ -81,8 +81,6 @@ export default class Board extends React.Component {
         props.startWithRevealedSquare,
         props.startWithRevealedZero
       ),
-      flaggedMines: 0,
-      revealedSpaces: 0,
       gameWin: false,
       gameLose: false,
     };
@@ -90,15 +88,45 @@ export default class Board extends React.Component {
 
   componentDidUpdate() {
     if (
-      this.state.revealedSpaces + this.state.flaggedMines ===
+      this.numRevealedSpaces() + this.numFlaggedSpaces() ===
         this.props.width * this.props.height &&
-      this.state.flaggedMines === this.props.mines &&
+      this.numFlaggedSpaces() === this.props.mines &&
       !this.state.gameWin &&
       !this.state.gameLose
     ) {
       this.setState({ gameWin: true });
     }
   }
+
+  numFlaggedSpaces() {
+    let flaggedSpaces = 0;
+    for (const { square } of this.allSpaces()) {
+      if (square.flagged) {
+        flaggedSpaces++;
+      }
+    }
+
+    return flaggedSpaces;
+  }
+
+  numRevealedSpaces() {
+    let revealedSpaces = 0;
+    for (const { square } of this.allSpaces()) {
+      if (square.revealed) {
+        revealedSpaces++;
+      }
+    }
+
+    return revealedSpaces;
+  }
+
+  allSpaces = function* () {
+    for (let x = 0; x < this.props.width; x++) {
+      for (let y = 0; y < this.props.height; y++) {
+        yield { square: this.state.squareData[y][x], x: x, y: y };
+      }
+    }
+  };
 
   updateSquare(x, y, squareDatum) {
     this.setState((prevState) => ({
@@ -118,9 +146,6 @@ export default class Board extends React.Component {
     if (squareDatum.flagged) return;
 
     this.updateSquare(x, y, { revealed: true });
-    this.setState((prevState) => ({
-      revealedSpaces: prevState.revealedSpaces + 1,
-    }));
 
     if (squareDatum.mine) {
       this.setState({ gameLose: true });
@@ -165,10 +190,6 @@ export default class Board extends React.Component {
     if (this.state.squareData[y][x].flagged === flagged) return;
 
     this.updateSquare(x, y, { flagged: flagged });
-
-    this.setState((prevState) => ({
-      flaggedMines: prevState.flaggedMines + (flagged ? 1 : -1),
-    }));
   }
 
   flagAdjacentSquares(x, y) {
@@ -232,7 +253,7 @@ export default class Board extends React.Component {
     const status = () => {
       if (this.state.gameLose) return "Mine located the hard way - you lose!";
       if (this.state.gameWin) return "All mines flagged - you win!";
-      return `Flagged ${this.state.flaggedMines} of ${this.props.mines} mines.`;
+      return `Flagged ${this.numFlaggedSpaces()} of ${this.props.mines} mines.`;
     };
 
     return (
