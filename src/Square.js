@@ -33,7 +33,7 @@ export default function Square(props) {
       onClick={props.onClick}
       onContextMenu={(e) => {
         e.preventDefault();
-        props.onFlag(props.data.flagged);
+        props.onFlag(!props.data.flagged);
       }}
     >
       {display(props)}

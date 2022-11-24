@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Square from "./Square.js";
 
 function* adjacentSquares(squareData, x, y) {
@@ -69,224 +69,229 @@ function makeSquareData(
   return squareData;
 }
 
-export default class Board extends React.Component {
-  constructor(props) {
-    super(props);
+const handleInterval = (props, squareData, setSquareData, setGameLose) => {
+  // let's simulate a left and right click on every revealed square.
+  for (const { square, x, y } of allSpaces(squareData)) {
+    if (square.revealed) {
+      if (props.autoClick)
+        handleClick(props, squareData, setSquareData, setGameLose, x, y);
+      if (props.autoRightClick)
+        handleFlag(props, squareData, setSquareData, x, y);
+    }
+  }
+};
 
-    this.state = {
-      squareData: makeSquareData(
-        props.width,
-        props.height,
-        props.mines,
-        props.startWithRevealedSquare,
-        props.startWithRevealedZero
-      ),
-      gameWin: false,
-      gameLose: false,
-      intervalId: 0,
-    };
+const numFlaggedSpaces = (squareData) => {
+  let flaggedSpaces = 0;
+  for (const { square } of allSpaces(squareData)) {
+    if (square.flagged) {
+      flaggedSpaces++;
+    }
   }
 
-  componentDidMount() {
-    this.setState({
-      intervalId: setInterval(
-        this.handleInterval.bind(this),
-        this.props.autoClickIntervalMs
-      ),
-    });
+  return flaggedSpaces;
+};
+
+const numRevealedSpaces = (squareData) => {
+  let revealedSpaces = 0;
+  for (const { square } of allSpaces(squareData)) {
+    if (square.revealed) {
+      revealedSpaces++;
+    }
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+  return revealedSpaces;
+};
+
+const allSpaces = function* (squareData) {
+  for (let y = 0; y < squareData.length; y++) {
+    for (let x = 0; x < squareData[y].length; x++) {
+      yield { square: squareData[y][x], x: x, y: y };
+    }
+  }
+};
+
+const updateSquare = (setSquareData, x, y, squareDatum) => {
+  setSquareData((prevSquareData) => {
+    return prevSquareData.map((row, i) =>
+      i !== y
+        ? row
+        : row.map((square, j) =>
+            j !== x ? square : { ...square, ...squareDatum }
+          )
+    );
+  });
+};
+
+const revealSquare = (squareData, setSquareData, setGameLose, x, y) => {
+  const squareDatum = squareData[y][x];
+  if (squareDatum.revealed) return;
+  if (squareDatum.flagged) return;
+
+  updateSquare(setSquareData, x, y, { revealed: true });
+
+  if (squareDatum.mine) {
+    setGameLose(true);
+  }
+};
+
+const revealAdjacentSquares = (
+  squareData,
+  setSquareData,
+  setGameLose,
+  x,
+  y
+) => {
+  for (const adjSquare of adjacentSquares(squareData, x, y)) {
+    revealSquare(
+      squareData,
+      setSquareData,
+      setGameLose,
+      adjSquare.x,
+      adjSquare.y
+    );
+  }
+};
+
+const safeRevealAdjacentSquares = (
+  squareData,
+  setSquareData,
+  setGameLose,
+  x,
+  y
+) => {
+  let adjacentFlagged = 0;
+  for (const adjSquare of adjacentSquares(squareData, x, y)) {
+    if (adjSquare.square.flagged) adjacentFlagged++;
+  }
+  if (adjacentFlagged >= squareData[y][x].adjacentMines) {
+    revealAdjacentSquares(squareData, setSquareData, setGameLose, x, y);
+  }
+};
+
+const handleClick = (props, squareData, setSquareData, setGameLose, x, y) => {
+  const squareDatum = squareData[y][x];
+  if (squareDatum.flagged) {
+    return;
   }
 
-  componentDidUpdate() {
+  if (squareDatum.revealed) {
+    if (props.safeAutoReveal >= squareDatum.adjacentMines) {
+      safeRevealAdjacentSquares(squareData, setSquareData, setGameLose, x, y);
+    } else if (props.autoReveal >= squareDatum.adjacentMines) {
+      revealAdjacentSquares(squareData, setSquareData, setGameLose, x, y);
+    }
+  }
+
+  revealSquare(squareData, setSquareData, setGameLose, x, y);
+};
+
+const flagSquare = (squareData, setSquareData, x, y, flagged) => {
+  if (squareData[y][x].revealed) return;
+  if (squareData[y][x].flagged === flagged) return;
+
+  updateSquare(setSquareData, x, y, { flagged: flagged });
+};
+
+const flagAdjacentSquares = (squareData, setSquareData, x, y) => {
+  for (const adjSquare of adjacentSquares(squareData, x, y)) {
+    flagSquare(squareData, setSquareData, adjSquare.x, adjSquare.y, true);
+  }
+};
+
+const safeFlagAdjacentSquares = (squareData, setSquareData, x, y) => {
+  let adjFlaggable = 0;
+  for (const adjSquare of adjacentSquares(squareData, x, y)) {
+    if (adjSquare.square.flagged || !adjSquare.square.revealed) {
+      adjFlaggable++;
+    }
+  }
+  if (adjFlaggable === squareData[y][x].adjacentMines) {
+    flagAdjacentSquares(squareData, setSquareData, x, y);
+  }
+};
+
+const handleFlag = (props, squareData, setSquareData, x, y, flagged) => {
+  if (squareData[y][x].revealed) {
+    if (props.safeAutoFlag) {
+      safeFlagAdjacentSquares(squareData, setSquareData, x, y);
+    } else if (props.autoFlag) {
+      flagAdjacentSquares(squareData, setSquareData, x, y);
+    }
+  } else {
+    flagSquare(squareData, setSquareData, x, y, flagged);
+  }
+};
+
+export default function Board(props) {
+  const [squareData, setSquareData] = useState(
+    makeSquareData(
+      props.width,
+      props.height,
+      props.mines,
+      props.startWithRevealedSquare,
+      props.startWithRevealedZero
+    )
+  );
+  const [gameWin, setGameWin] = useState(false);
+  const [gameLose, setGameLose] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!gameWin && !gameLose) {
+        handleInterval(props, squareData, setSquareData, setGameLose);
+      }
+    }, props.autoClickIntervalMs);
+    return () => clearInterval(interval);
+  });
+
+  useEffect(() => {
     if (
-      this.numRevealedSpaces() + this.numFlaggedSpaces() ===
-        this.props.width * this.props.height &&
-      this.numFlaggedSpaces() === this.props.mines &&
-      !this.state.gameWin &&
-      !this.state.gameLose
+      numRevealedSpaces(squareData) + numFlaggedSpaces(squareData) ===
+        props.width * props.height &&
+      numFlaggedSpaces(squareData) === props.mines &&
+      !gameWin &&
+      !gameLose
     ) {
-      this.setState({ gameWin: true });
+      setGameWin(true);
     }
-  }
+  }, [squareData, props.width, props.height, props.mines, gameWin, gameLose]);
 
-  handleInterval() {
-    // let's simulate a left and right click on every revealed square.
-    for (const { square, x, y } of this.allSpaces()) {
-      if (square.revealed) {
-        if (this.props.autoClick) this.handleClick(x, y);
-        if (this.props.autoRightClick) this.handleFlag(x, y);
-      }
-    }
-  }
-
-  numFlaggedSpaces() {
-    let flaggedSpaces = 0;
-    for (const { square } of this.allSpaces()) {
-      if (square.flagged) {
-        flaggedSpaces++;
-      }
-    }
-
-    return flaggedSpaces;
-  }
-
-  numRevealedSpaces() {
-    let revealedSpaces = 0;
-    for (const { square } of this.allSpaces()) {
-      if (square.revealed) {
-        revealedSpaces++;
-      }
-    }
-
-    return revealedSpaces;
-  }
-
-  allSpaces = function* () {
-    for (let x = 0; x < this.props.width; x++) {
-      for (let y = 0; y < this.props.height; y++) {
-        yield { square: this.state.squareData[y][x], x: x, y: y };
-      }
-    }
+  const status = () => {
+    if (gameLose) return "Mine located the hard way - you lose!";
+    if (gameWin) return "All mines flagged - you win!";
+    return `Flagged ${numFlaggedSpaces(squareData)} of ${props.mines} mines.`;
   };
 
-  updateSquare(x, y, squareDatum) {
-    this.setState((prevState) => ({
-      squareData: prevState.squareData.map((row, i) =>
-        i !== y
-          ? row
-          : row.map((square, j) =>
-              j !== x ? square : { ...square, ...squareDatum }
-            )
-      ),
-    }));
-  }
-
-  revealSquare(x, y) {
-    const squareDatum = this.state.squareData[y][x];
-    if (squareDatum.revealed) return;
-    if (squareDatum.flagged) return;
-
-    this.updateSquare(x, y, { revealed: true });
-
-    if (squareDatum.mine) {
-      this.setState({ gameLose: true });
-    }
-  }
-
-  revealAdjacentSquares(x, y) {
-    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-      this.revealSquare(adjSquare.x, adjSquare.y);
-    }
-  }
-
-  safeRevealAdjacentSquares(x, y) {
-    let adjacentFlagged = 0;
-    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-      if (adjSquare.square.flagged) adjacentFlagged++;
-    }
-    if (adjacentFlagged >= this.state.squareData[y][x].adjacentMines) {
-      this.revealAdjacentSquares(x, y);
-    }
-  }
-
-  handleClick(x, y) {
-    const squareDatum = this.state.squareData[y][x];
-    if (this.state.gameLose || this.state.gameWin || squareDatum.flagged) {
-      return;
-    }
-
-    if (squareDatum.revealed) {
-      if (this.props.safeAutoReveal >= squareDatum.adjacentMines) {
-        this.safeRevealAdjacentSquares(x, y);
-      } else if (this.props.autoReveal >= squareDatum.adjacentMines) {
-        this.revealAdjacentSquares(x, y);
-      }
-    }
-
-    this.revealSquare(x, y);
-  }
-
-  flagSquare(x, y, flagged) {
-    if (this.state.squareData[y][x].revealed) return;
-    if (this.state.squareData[y][x].flagged === flagged) return;
-
-    this.updateSquare(x, y, { flagged: flagged });
-  }
-
-  flagAdjacentSquares(x, y) {
-    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-      this.flagSquare(adjSquare.x, adjSquare.y, true);
-    }
-  }
-
-  safeFlagAdjacentSquares(x, y) {
-    let adjFlaggable = 0;
-    for (const adjSquare of adjacentSquares(this.state.squareData, x, y)) {
-      if (adjSquare.square.flagged || !adjSquare.square.revealed) {
-        adjFlaggable++;
-      }
-    }
-    if (adjFlaggable === this.state.squareData[y][x].adjacentMines) {
-      this.flagAdjacentSquares(x, y);
-    }
-  }
-
-  handleFlag(x, y, flagged) {
-    if (this.state.gameLose || this.state.gameWin) {
-      return;
-    }
-
-    if (this.state.squareData[y][x].revealed) {
-      if (this.props.safeAutoFlag) {
-        this.safeFlagAdjacentSquares(x, y);
-      } else if (this.props.autoFlag) {
-        this.flagAdjacentSquares(x, y);
-      }
-    } else {
-      this.flagSquare(x, y, flagged);
-    }
-  }
-
-  renderSquare(x, y) {
+  const renderSquare = (x, y) => {
     return (
       <Square
-        key={y * this.props.width + x}
-        onClick={() => this.handleClick(x, y)}
-        onFlag={(flagged) => this.handleFlag(x, y, flagged)}
-        gameWin={this.state.gameWin}
-        gameLose={this.state.gameLose}
-        data={this.state.squareData[y][x]}
+        key={y * props.width + x}
+        onClick={() =>
+          handleClick(props, squareData, setSquareData, setGameLose, x, y)
+        }
+        onFlag={(flagged) =>
+          handleFlag(props, squareData, setSquareData, x, y, flagged)
+        }
+        gameWin={gameWin}
+        gameLose={gameLose}
+        data={squareData[y][x]}
       />
     );
-  }
+  };
 
-  renderRow(y) {
+  const renderRow = (y) => {
     return (
       <div className="board-row" key={y}>
-        {Array.from({ length: this.props.width }, (step, i) =>
-          this.renderSquare(i, y)
-        )}
+        {Array.from({ length: props.width }, (_, i) => renderSquare(i, y))}
       </div>
     );
-  }
+  };
 
-  render() {
-    const status = () => {
-      if (this.state.gameLose) return "Mine located the hard way - you lose!";
-      if (this.state.gameWin) return "All mines flagged - you win!";
-      return `Flagged ${this.numFlaggedSpaces()} of ${this.props.mines} mines.`;
-    };
-
-    return (
-      <div>
-        <div className="status">{status()}</div>
-        {Array.from({ length: this.props.height }, (element, i) =>
-          this.renderRow(i)
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <div className="status">{status()}</div>
+      {Array.from({ length: props.height }, (_, i) => renderRow(i))}
+    </div>
+  );
 }
