@@ -111,26 +111,22 @@ export default class BoardModel {
     this.adjacentSquares(loc).forEach(({ square }) => (square.revealed = true));
   }
 
-  safeRevealAdjacentSquares(loc) {
+  revealAdjacentSquaresIsSafe(loc) {
     const adjacentFlagged = this.adjacentSquares(loc).filter(
       ({ square }) => square.flagged
     ).length;
-    if (adjacentFlagged >= this.squareAt(loc).adjacentMines) {
-      this.revealAdjacentSquares(loc);
-    }
+    return adjacentFlagged >= this.squareAt(loc).adjacentMines;
   }
 
   flagAdjacentSquares(loc) {
     this.adjacentSquares(loc).forEach(({ square }) => (square.flagged = true));
   }
 
-  safeFlagAdjacentSquares(loc) {
+  flagAdjacentSquaresIsSafe(loc) {
     const adjacentFlaggable = this.adjacentSquares(loc).filter(
       ({ square }) => square.flagged || !square.revealed
     ).length;
-    if (adjacentFlaggable === this.squareAt(loc).adjacentMines) {
-      this.flagAdjacentSquares(loc);
-    }
+    return adjacentFlaggable === this.squareAt(loc).adjacentMines;
   }
 }
 

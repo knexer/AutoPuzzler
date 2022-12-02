@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { proxy, useSnapshot } from "valtio";
+import { proxy, useSnapshot, snapshot } from "valtio";
 import BoardModel, {
   initBoard,
   populateBoard,
@@ -8,41 +8,46 @@ import BoardModel, {
 import Square from "./Square.js";
 
 const handleInterval = (props, model) => {
+  const modelSnapNotProxied = snapshot(model);
   // let's simulate a left and right click on every revealed square.
-  for (const { square, loc } of model.allSquares()) {
+  for (const { square, loc } of modelSnapNotProxied.allSquares()) {
     if (square.revealed) {
-      if (props.autoClick) handleClick(props, model, loc);
-      if (props.autoRightClick) handleFlag(props, model, loc);
+      if (props.autoClick) handleClick(props, model, modelSnapNotProxied, loc);
+      if (props.autoRightClick)
+        handleFlag(props, model, modelSnapNotProxied, loc);
     }
   }
 };
 
-const handleClick = (props, model, loc) => {
-  const square = model.squareAt(loc);
+const handleClick = (props, writeModel, readModel, loc) => {
+  const square = readModel.squareAt(loc);
   if (square.flagged) {
     return;
   }
 
   if (square.revealed) {
-    if (props.safeAutoReveal >= square.adjacentMines) {
-      model.safeRevealAdjacentSquares(loc);
+    if (
+      props.safeAutoReveal >= square.adjacentMines &&
+      readModel.revealAdjacentSquaresIsSafe(loc)
+    ) {
+      writeModel.revealAdjacentSquares(loc);
     } else if (props.autoReveal >= square.adjacentMines) {
-      model.revealAdjacentSquares(loc);
+      writeModel.revealAdjacentSquares(loc);
     }
   }
 
-  square.revealed = true;
+  writeModel.squareAt(loc).revealed = true;
 };
 
-const handleFlag = (props, model, loc, flagged) => {
-  if (model.squareAt(loc).revealed) {
-    if (props.safeAutoFlag) {
-      model.safeFlagAdjacentSquares(loc);
+const handleFlag = (props, writeModel, readModel, loc, flagged) => {
+  if (readModel.squareAt(loc).revealed) {
+    if (props.safeAutoFlag && readModel.flagAdjacentSquaresIsSafe(loc)) {
+      writeModel.flagAdjacentSquares(loc);
     } else if (props.autoFlag) {
-      model.flagAdjacentSquares(loc);
+      writeModel.flagAdjacentSquares(loc);
     }
   } else {
-    model.squareAt(loc).flagged = flagged;
+    writeModel.squareAt(loc).flagged = flagged;
   }
 };
 
@@ -102,8 +107,10 @@ export default function Board(props) {
     return (
       <Square
         key={y * props.width + x}
-        onClick={() => handleClick(props, model, { x, y })}
-        onFlag={(flagged) => handleFlag(props, model, { x: x, y: y }, flagged)}
+        onClick={() => handleClick(props, model, model, { x, y })}
+        onFlag={(flagged) =>
+          handleFlag(props, model, model, { x: x, y: y }, flagged)
+        }
         gameWin={gameWin}
         gameLose={gameLose}
         model={model.squareAt({ x: x, y: y })}
