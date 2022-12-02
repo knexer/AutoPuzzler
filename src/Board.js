@@ -66,20 +66,31 @@ const useModel = (props) => {
   return { model: modelRef.current, modelSnap: useSnapshot(modelRef.current) };
 };
 
+const useAutoClick = (props, model, isWon, isLost) => {
+  const savedCallback = useRef(null);
+  savedCallback.current = () => {
+    if (!isWon && !isLost) {
+      handleInterval(props, model);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(
+      () => savedCallback.current(),
+      props.autoClickIntervalMs
+    );
+
+    return () => clearInterval(intervalId);
+  }, [props.autoClickIntervalMs]);
+};
+
 export default function Board(props) {
   const { model, modelSnap } = useModel(props);
 
   const gameWin = modelSnap.isWon;
   const gameLose = modelSnap.isLost;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!gameWin && !gameLose) {
-        handleInterval(props, model);
-      }
-    }, props.autoClickIntervalMs);
-    return () => clearInterval(interval);
-  });
+  useAutoClick(props, model, gameWin, gameLose);
 
   const status = () => {
     if (gameLose) return "Mine located the hard way - you lose!";
