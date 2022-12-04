@@ -86,19 +86,19 @@ class Game extends React.Component {
               mines={this.state.mines}
               startWithRevealedSquare={this.state.startWithRevealedSquare}
               startWithRevealedZero={this.state.startWithRevealedZero}
-              autoReveal={
-                this.state.autoRevealEnabled ? this.state.autoRevealMax : -1
-              }
-              safeAutoReveal={
-                this.state.safeAutoRevealEnabled
+              automationConfig={{
+                autoReveal: this.state.autoRevealEnabled
+                  ? this.state.autoRevealMax
+                  : -1,
+                safeAutoReveal: this.state.safeAutoRevealEnabled
                   ? this.state.safeAutoRevealMax
-                  : -1
-              }
-              autoFlag={this.state.autoFlagEnabled}
-              safeAutoFlag={this.state.safeAutoFlagEnabled}
-              autoClick={this.state.autoClick}
-              autoRightClick={this.state.autoRightClick}
-              autoClickIntervalMs={250}
+                  : -1,
+                autoFlag: this.state.autoFlagEnabled,
+                safeAutoFlag: this.state.safeAutoFlagEnabled,
+                autoClick: this.state.autoClick,
+                autoRightClick: this.state.autoRightClick,
+                autoClickIntervalMs: 250,
+              }}
               key={this.state.gameId}
             />
           </div>
