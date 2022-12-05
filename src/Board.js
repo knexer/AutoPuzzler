@@ -12,8 +12,11 @@ const initModel = (props) => {
   const model = proxy(new BoardModel(props.width, props.height, props.mines));
   initBoard(model);
   populateBoard(model);
-  if (props.startWithRevealedSquare || props.startWithRevealedZero) {
-    revealStartingSpace(model, props.startWithRevealedZero);
+  if (
+    props.automationConfig.startWithRevealedSquare ||
+    props.automationConfig.startWithRevealedZero
+  ) {
+    revealStartingSpace(model, props.automationConfig.startWithRevealedZero);
   }
 
   return model;

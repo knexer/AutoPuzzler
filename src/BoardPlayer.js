@@ -20,12 +20,14 @@ export default class BoardPlayer {
 
     if (square.revealed) {
       if (
-        this.automationConfig.safeAutoReveal >= square.adjacentMines &&
-        readModel.revealAdjacentSquaresIsSafe(loc)
+        (this.automationConfig.autoRevealZero && square.adjacentMines === 0) ||
+        (this.automationConfig.autoRevealOne && square.adjacentMines === 1) ||
+        (this.automationConfig.autoRevealTwo && square.adjacentMines === 2) ||
+        (this.automationConfig.autoRevealThreePlus && square.adjacentMines >= 3)
       ) {
-        this.model.revealAdjacentSquares(loc);
-      } else if (this.automationConfig.autoReveal >= square.adjacentMines) {
-        this.model.revealAdjacentSquares(loc);
+        if (readModel.revealAdjacentSquaresIsSafe(loc)) {
+          this.model.revealAdjacentSquares(loc);
+        }
       }
     }
 
@@ -36,11 +38,9 @@ export default class BoardPlayer {
     const readModel = snapshot ?? this.model;
     if (readModel.squareAt(loc).revealed) {
       if (
-        this.automationConfig.safeAutoFlag &&
+        this.automationConfig.autoFlag &&
         readModel.flagAdjacentSquaresIsSafe(loc)
       ) {
-        this.model.flagAdjacentSquares(loc);
-      } else if (this.automationConfig.autoFlag) {
         this.model.flagAdjacentSquares(loc);
       }
     } else {
@@ -72,10 +72,7 @@ export default class BoardPlayer {
   startInterval() {
     this.stopInterval();
 
-    this.timeoutId = setTimeout(
-      () => this.handleInterval(),
-      this.automationConfig.autoClickIntervalMs
-    );
+    this.timeoutId = setTimeout(() => this.handleInterval(), 250);
   }
 
   stopInterval() {
