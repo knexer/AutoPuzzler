@@ -94,6 +94,10 @@ ul {
   flex-direction: column;
 }
 
+.money {
+  font-size: large;
+}
+
 .game-info {
   display: flex;
   flex-direction: column;

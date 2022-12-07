@@ -27,7 +27,8 @@ export default function AutomationUnlockPanel(props) {
 
   return (
     <div className="right-panel">
-      Automation options:
+      <label className="money"> ${snap.money}</label>
+      Upgrades:
       {renderedUnlockables}
     </div>
   );

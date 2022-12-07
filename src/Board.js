@@ -9,7 +9,9 @@ import BoardPlayer from "./BoardPlayer.js";
 import Square from "./Square.js";
 
 const initModel = (props) => {
-  const model = proxy(new BoardModel(props.width, props.height, props.mines));
+  const model = proxy(
+    new BoardModel(props.width, props.height, props.mines, props.onWin)
+  );
   initBoard(model);
   populateBoard(model);
   if (

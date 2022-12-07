@@ -1,5 +1,6 @@
 export default class UnlockState {
   constructor() {
+    this.money = 0;
     this.unlockables = [];
     this.addUnlockable(
       "autoRevealZero",
@@ -47,5 +48,9 @@ export default class UnlockState {
 
   addUnlockable(key, desc) {
     this.unlockables.push({ key: key, desc: desc, enabled: false });
+  }
+
+  onWin(boardModel) {
+    this.money++;
   }
 }

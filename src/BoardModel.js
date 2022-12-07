@@ -38,10 +38,11 @@ const revealStartingSpace = (boardModel, mustBeZero) => {
 };
 
 export default class BoardModel {
-  constructor(width, height, mines) {
+  constructor(width, height, mines, onWin) {
     this.width = width;
     this.height = height;
     this.mines = mines;
+    this.onWin = onWin;
     this.isWon = false;
     this.isLost = false;
     this.numFlaggedSquares = 0;
@@ -49,9 +50,15 @@ export default class BoardModel {
   }
 
   handleSquareChanged(loc) {
-    this.isWon = this.allSquares().every(({ square }) => {
-      return square.mine ? square.flagged : square.revealed;
-    });
+    if (!this.isWon) {
+      this.isWon = this.allSquares().every(({ square }) => {
+        return square.mine ? square.flagged : square.revealed;
+      });
+
+      if (this.isWon) {
+        this.onWin(this);
+      }
+    }
 
     this.isLost = this.allSquares().some(({ square }) => {
       return square.mine && square.revealed;

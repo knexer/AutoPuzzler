@@ -44,6 +44,7 @@ export default function Game(props) {
             width={width}
             height={height}
             mines={mines}
+            onWin={() => unlockState.onWin()}
             automationConfig={unlockStateSnap.makeAutomationConfig()}
             key={gameId}
           />
