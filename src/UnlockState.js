@@ -51,6 +51,6 @@ export default class UnlockState {
   }
 
   onWin(boardModel) {
-    this.money++;
+    this.money += boardModel.mines;
   }
 }
