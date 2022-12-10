@@ -57,6 +57,11 @@ export default class UnlockState {
     );
   }
 
+  isUnlocked(key) {
+    return this.unlockables.find((unlockable) => unlockable.key === key)
+      .enabled;
+  }
+
   addUnlockable(key, desc, cost) {
     this.unlockables.push({ key: key, desc: desc, cost: cost, enabled: false });
   }

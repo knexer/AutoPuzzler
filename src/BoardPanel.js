@@ -12,8 +12,11 @@ export default function BoardPanel(props) {
   const [height, setHeight] = useState(8);
   const [mines, setMines] = useState(3);
 
-  const handleNewGame = () => {
+  const handleNewGame = (width, height, mines) => {
     setStarted(true);
+    setWidth(width);
+    setHeight(height);
+    setMines(mines);
   };
 
   if (started) {
@@ -33,38 +36,25 @@ export default function BoardPanel(props) {
       </div>
     );
   } else {
+    const renderNewGameButton = (width, height, mines, text) => {
+      return (
+        <button
+          type="button"
+          onClick={() => handleNewGame(width, height, mines)}
+        >
+          {text}
+        </button>
+      );
+    };
     return (
       <div className="game-info">
-        <div>
-          Width:{" "}
-          <input
-            type="number"
-            name="Width"
-            value={width}
-            onChange={(e) => setWidth(parseInt(e.target.value))}
-          ></input>
-        </div>
-        <div>
-          Height:{" "}
-          <input
-            type="number"
-            name="Height"
-            value={height}
-            onChange={(e) => setHeight(parseInt(e.target.value))}
-          ></input>
-        </div>
-        <div>
-          Mines:{" "}
-          <input
-            type="number"
-            name="Mines"
-            value={mines}
-            onChange={(e) => setMines(parseInt(e.target.value))}
-          ></input>
-        </div>
-        <button type="submit" onClick={handleNewGame}>
-          New Game
-        </button>
+        {renderNewGameButton(4, 4, 3, "New Smol Board")}
+        {unlockStateSnap.isUnlocked("boardMedium")
+          ? renderNewGameButton(6, 6, 6, "New Medium Board")
+          : ""}
+        {unlockStateSnap.isUnlocked("boardLarge")
+          ? renderNewGameButton(9, 9, 14, "New Big Board")
+          : ""}
       </div>
     );
   }
