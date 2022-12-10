@@ -20,16 +20,7 @@ export default class BoardPlayer {
     }
 
     if (square.revealed) {
-      if (
-        (this.automationConfig.autoRevealZero && square.adjacentMines === 0) ||
-        (this.automationConfig.autoRevealOne && square.adjacentMines === 1) ||
-        (this.automationConfig.autoRevealTwo && square.adjacentMines === 2) ||
-        (this.automationConfig.autoRevealThreePlus && square.adjacentMines >= 3)
-      ) {
-        if (readModel.revealAdjacentSquaresIsSafe(loc)) {
-          this.model.revealAdjacentSquares(loc);
-        }
-      }
+      this.applyAutomationRules(loc, readModel);
     }
 
     this.model.squareAt(loc).revealed = true;
@@ -38,14 +29,38 @@ export default class BoardPlayer {
   handleFlag(loc, flagged, snapshot) {
     const readModel = snapshot ?? this.model;
     if (readModel.squareAt(loc).revealed) {
+      this.applyAutomationRules(loc, readModel);
+    } else {
+      this.model.squareAt(loc).flagged = flagged;
+    }
+  }
+
+  canApplyToSquare(square) {
+    const mines = square.adjacentMines;
+    if (mines === 0) return true;
+    if (mines === 1 && this.automationConfig.automationLevel1) return true;
+    if (mines === 2 && this.automationConfig.automationLevel2) return true;
+    if (this.automationConfig.automationLevelMax) return true;
+    return false;
+  }
+
+  applyAutomationRules(loc, readModel) {
+    const square = readModel.squareAt(loc);
+
+    if (this.canApplyToSquare(square)) {
+      if (
+        this.automationConfig.autoReveal &&
+        readModel.revealAdjacentSquaresIsSafe(loc)
+      ) {
+        this.model.revealAdjacentSquares(loc);
+      }
+
       if (
         this.automationConfig.autoFlag &&
         readModel.flagAdjacentSquaresIsSafe(loc)
       ) {
         this.model.flagAdjacentSquares(loc);
       }
-    } else {
-      this.model.squareAt(loc).flagged = flagged;
     }
   }
 
@@ -59,10 +74,7 @@ export default class BoardPlayer {
     this.startInterval();
 
     // Skip running for now if automation isn't unlocked yet.
-    if (
-      !this.automationConfig.autoClick &&
-      !this.automationConfig.autoRightClick
-    ) {
+    if (!this.automationConfig.autoClick) {
       return;
     }
 
@@ -70,10 +82,7 @@ export default class BoardPlayer {
     // Simulate a left and/or right click on the square at the next automation location.
     const square = modelSnapNotProxied.squareAt(this.automationLoc);
     if (square.revealed) {
-      if (this.automationConfig.autoClick)
-        this.handleClick(this.automationLoc, modelSnapNotProxied);
-      if (this.automationConfig.autoRightClick)
-        this.handleFlag(this.automationLoc, modelSnapNotProxied);
+      this.applyAutomationRules(this.automationLoc, modelSnapNotProxied);
     }
 
     // Move to the next square.

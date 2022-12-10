@@ -3,29 +3,29 @@ export default class UnlockState {
     this.money = 0;
     this.unlockables = [];
     this.addUnlockable(
-      "autoRevealZero",
-      "Reveal adjacent squares when clicking a revealed zero.",
+      "autoReveal",
+      "When clicking a revealed square: reveal adjacent squares, if it's safe to do so. Limited by your automation complexity level (initially zero).",
       3
     );
     this.addUnlockable(
-      "autoRevealOne",
-      "Reveal adjacent squares when clicking a revealed one with one adjacent flagged square.",
-      4
-    );
-    this.addUnlockable(
-      "autoRevealTwo",
-      "Reveal adjacent squares when clicking a revealed two with two adjacent flagged squares.",
-      15
-    );
-    this.addUnlockable(
-      "autoRevealThreePlus",
-      "Reveal adjacent squares when clicking a revealed 3+ with the right number of adjacent flagged squares.",
-      30
-    );
-    this.addUnlockable(
       "autoFlag",
-      "Flag adjacent squares when right clicking a revealed square, if it's trivially correct to do so.",
-      10
+      "When clicking a revealed square: flag adjacent squares, if it's safe to do so. Limited by your automation complexity level (initally zero).",
+      9
+    );
+    this.addUnlockable(
+      "automationLevel1",
+      "Click rules can apply to revealed 1s.",
+      6
+    );
+    this.addUnlockable(
+      "automationLevel2",
+      "Click rules can apply to revealed 2s.",
+      12
+    );
+    this.addUnlockable(
+      "automationLevelMax",
+      "Click rules apply to any revealed square.",
+      25
     );
     this.addUnlockable(
       "startWithRevealedSquare",
@@ -39,18 +39,13 @@ export default class UnlockState {
     );
     this.addUnlockable(
       "autoClick",
-      "Apply left click rules to one square, four times per second.",
+      "Apply click rules to a square, four times per second.",
       6
     );
-    this.addUnlockable(
-      "autoRightClick",
-      "Apply right click rules to one square, four times per second.",
-      12
-    );
-    this.addUnlockable("autoSpeed1", "Double automation speed.", 5);
-    this.addUnlockable("autoSpeed2", "Double automation speed.", 10);
-    this.addUnlockable("autoSpeed3", "Double automation speed.", 20);
-    this.addUnlockable("autoSpeed4", "Double automation speed.", 40);
+    this.addUnlockable("autoSpeed1", "Double automation speed.", 8);
+    this.addUnlockable("autoSpeed2", "Double automation speed.", 16);
+    this.addUnlockable("autoSpeed3", "Double automation speed.", 32);
+    this.addUnlockable("autoSpeed4", "Double automation speed.", 64);
     this.addUnlockable(
       "boardMedium",
       "Play on a bigger board, with more mines, worth more money.",
