@@ -46,6 +46,10 @@ ul {
   background: #f4faff;
 }
 
+.automation-focus {
+  background:#d4ffe4;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }

@@ -3,6 +3,7 @@ export default class SquareModel {
   adjacentMines = 0;
   #flagged = false;
   #revealed = false;
+  automationFocus = false;
 
   constructor(onChange) {
     this.onChange = onChange;

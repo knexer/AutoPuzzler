@@ -5,6 +5,7 @@ export default class BoardPlayer {
     this.model = model;
     this.automationConfig = automationConfig;
     this.timeoutId = null;
+    this.automationLoc = { x: 0, y: 0 };
   }
 
   setAutomationConfig(automationConfig) {
@@ -54,19 +55,40 @@ export default class BoardPlayer {
     // Stop running forever if the board is finished.
     if (this.model.isWon || this.model.isLost) return;
 
-    const modelSnapNotProxied = snapshot(this.model);
-    // let's simulate a left and right click on every revealed square.
-    for (const { square, loc } of modelSnapNotProxied.allSquares()) {
-      if (square.revealed) {
-        if (this.automationConfig.autoClick)
-          this.handleClick(loc, modelSnapNotProxied);
-        if (this.automationConfig.autoRightClick)
-          this.handleFlag(loc, modelSnapNotProxied);
-      }
+    // Restart interval immediately in case we crash below.
+    this.startInterval();
+
+    // Skip running for now if automation isn't unlocked yet.
+    if (
+      !this.automationConfig.autoClick &&
+      !this.automationConfig.autoRightClick
+    ) {
+      return;
     }
 
-    // Restart the interval.
-    this.startInterval();
+    const modelSnapNotProxied = snapshot(this.model);
+    // Simulate a left and/or right click on the square at the next automation location.
+    const square = modelSnapNotProxied.squareAt(this.automationLoc);
+    if (square.revealed) {
+      if (this.automationConfig.autoClick)
+        this.handleClick(this.automationLoc, modelSnapNotProxied);
+      if (this.automationConfig.autoRightClick)
+        this.handleFlag(this.automationLoc, modelSnapNotProxied);
+    }
+
+    // Move to the next square.
+    this.model.squareAt(this.automationLoc).automationFocus = false;
+    this.automationLoc = {
+      x: this.automationLoc.x + 1,
+      y: this.automationLoc.y,
+    };
+    if (this.automationLoc.x >= this.model.width) {
+      this.automationLoc = {
+        x: 0,
+        y: (this.automationLoc.y + 1) % this.model.height,
+      };
+    }
+    this.model.squareAt(this.automationLoc).automationFocus = true;
   }
 
   startInterval() {

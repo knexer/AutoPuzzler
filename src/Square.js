@@ -32,7 +32,8 @@ export default function Square(props) {
         "square" +
         (isInteractive(props, modelSnap)
           ? " unrevealed-square"
-          : " revealed-square")
+          : " revealed-square") +
+        (modelSnap.automationFocus ? " automation-focus" : "")
       }
       onClick={props.onClick}
       onContextMenu={(e) => {
