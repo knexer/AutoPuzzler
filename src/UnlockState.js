@@ -47,9 +47,11 @@ export default class UnlockState {
       "Automatically right click every revealed square every 250ms.",
       10
     );
+    this.addUnlockable("boardMedium", "Play on a medium-sized board.", 10);
+    this.addUnlockable("boardLarge", "Play on a large board.", 20);
   }
 
-  makeAutomationConfig() {
+  getUnlockedUpgrades() {
     return Object.fromEntries(
       this.unlockables.map((unlockable) => [unlockable.key, unlockable.enabled])
     );

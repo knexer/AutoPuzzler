@@ -9,9 +9,7 @@ import BoardPlayer from "./BoardPlayer.js";
 import Square from "./Square.js";
 
 const initModel = (props) => {
-  const model = proxy(
-    new BoardModel(props.width, props.height, props.mines, props.onWin)
-  );
+  const model = proxy(new BoardModel(props.width, props.height, props.mines));
   initBoard(model);
   populateBoard(model);
   if (
@@ -57,9 +55,29 @@ export default function Board(props) {
   const gameWin = modelSnap.isWon;
   const gameLose = modelSnap.isLost;
 
+  const renderEndGameButton = () => {
+    return (
+      <button type="button" onClick={() => props.onGameEnd(model, gameWin)}>
+        End Game
+      </button>
+    );
+  };
+
   const status = () => {
-    if (gameLose) return "Mine located the hard way - you lose!";
-    if (gameWin) return "All mines flagged - you win!";
+    if (gameLose)
+      return (
+        <div>
+          <div>Mine found the hard way - you lose!</div>
+          {renderEndGameButton()}
+        </div>
+      );
+    if (gameWin)
+      return (
+        <div>
+          <div>All mines found - you win!</div>
+          {renderEndGameButton()}
+        </div>
+      );
     return `Flagged ${modelSnap.numFlaggedSquares} of ${props.mines} mines.`;
   };
 
