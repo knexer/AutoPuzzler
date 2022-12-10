@@ -55,27 +55,23 @@ export default function Board(props) {
   const gameWin = modelSnap.isWon;
   const gameLose = modelSnap.isLost;
 
-  const renderEndGameButton = () => {
-    return (
-      <button type="button" onClick={() => props.onGameEnd(model, gameWin)}>
-        End Game
-      </button>
-    );
-  };
-
   const status = () => {
     if (gameLose)
       return (
         <div>
           <div>Mine found the hard way - you lose!</div>
-          {renderEndGameButton()}
+          <button type="button" onClick={() => props.onGameEnd(model, false)}>
+            Abandon Game
+          </button>
         </div>
       );
     if (gameWin)
       return (
         <div>
           <div>All mines found - you win!</div>
-          {renderEndGameButton()}
+          <button type="button" onClick={() => props.onGameEnd(model, true)}>
+            Claim Spoils - ${model.mines}
+          </button>
         </div>
       );
     return `Flagged ${modelSnap.numFlaggedSquares} of ${props.mines} mines.`;
