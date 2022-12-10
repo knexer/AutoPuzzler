@@ -39,14 +39,18 @@ export default class UnlockState {
     );
     this.addUnlockable(
       "autoClick",
-      "Automatically click every revealed square every 250ms.",
-      10
+      "Apply left click rules to one square, four times per second.",
+      6
     );
     this.addUnlockable(
       "autoRightClick",
-      "Automatically right click every revealed square every 250ms.",
-      10
+      "Apply right click rules to one square, four times per second.",
+      12
     );
+    this.addUnlockable("autoSpeed1", "Double automation speed.", 5);
+    this.addUnlockable("autoSpeed2", "Double automation speed.", 10);
+    this.addUnlockable("autoSpeed3", "Double automation speed.", 20);
+    this.addUnlockable("autoSpeed4", "Double automation speed.", 40);
     this.addUnlockable(
       "boardMedium",
       "Play on a bigger board, with more mines, worth more money.",

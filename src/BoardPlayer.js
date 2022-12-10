@@ -93,8 +93,15 @@ export default class BoardPlayer {
 
   startInterval() {
     this.stopInterval();
-
-    this.timeoutId = setTimeout(() => this.handleInterval(), 250);
+    let numIntervalUpgrades = 0;
+    if (this.automationConfig.autoSpeed1) numIntervalUpgrades++;
+    if (this.automationConfig.autoSpeed2) numIntervalUpgrades++;
+    if (this.automationConfig.autoSpeed3) numIntervalUpgrades++;
+    if (this.automationConfig.autoSpeed4) numIntervalUpgrades++;
+    this.timeoutId = setTimeout(
+      () => this.handleInterval(),
+      250 / Math.pow(2, numIntervalUpgrades)
+    );
   }
 
   stopInterval() {

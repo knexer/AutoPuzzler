@@ -53,7 +53,7 @@ export default function BoardPanel(props) {
           ? renderNewGameButton(6, 6, 6, "New Medium Board")
           : ""}
         {unlockStateSnap.isUnlocked("boardLarge")
-          ? renderNewGameButton(9, 9, 14, "New Big Board")
+          ? renderNewGameButton(9, 9, 13, "New Big Board")
           : ""}
       </div>
     );
