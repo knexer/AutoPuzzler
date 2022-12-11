@@ -33,17 +33,17 @@ export default function AutomationUnlockPanel(props) {
   const availableUnlockables = [];
   const purchasedUnlockables = [];
   for (let i = 0; i < snap.unlockables.length; i++) {
-    (snap.unlockables[i].enabled
-      ? purchasedUnlockables
-      : availableUnlockables
-    ).push(
-      renderUnlockable(
-        snap.unlockables[i],
-        unlockState.unlockables[i],
-        snap,
-        unlockState
-      )
+    const renderedUnlockable = renderUnlockable(
+      snap.unlockables[i],
+      unlockState.unlockables[i],
+      snap,
+      unlockState
     );
+    if (snap.unlockables[i].enabled) {
+      purchasedUnlockables.push(renderedUnlockable);
+    } else if (snap.isAvailable(snap.unlockables[i])) {
+      availableUnlockables.push(renderedUnlockable);
+    }
   }
 
   return (
