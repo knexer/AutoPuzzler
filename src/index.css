@@ -89,17 +89,31 @@ ul {
 }
 
 .left-panel {
+  width: 500px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
-.right-panel {
+.upgrade-list{
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  border: 1px solid #000;
+  padding: 10px;
 }
 
-.money {
+.upgrade-button{
+  width: 50px;
+}
+
+.header {
   font-size: large;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .game-info {

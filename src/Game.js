@@ -19,10 +19,8 @@ export default function Game(props) {
 
   return (
     <div className="game">
-      <div className="left-panel">
-        <BoardPanel unlockState={unlockState} />
-      </div>
       <AutomationUnlockPanel unlockState={unlockState} />
+      <BoardPanel unlockState={unlockState} />
     </div>
   );
 }

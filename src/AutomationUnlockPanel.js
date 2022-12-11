@@ -11,6 +11,7 @@ const renderUnlockable = (
     <label key={unlockableSnap.key}>
       <button
         type="button"
+        className="upgrade-button"
         disabled={
           unlockableSnap.cost > unlockStateSnap.money || unlockableSnap.enabled
         }
@@ -47,17 +48,20 @@ export default function AutomationUnlockPanel(props) {
   }
 
   return (
-    <div className="right-panel">
-      <label className="money"> ${snap.money}</label>
-      <div className="right-panel">
+    <div className="left-panel">
+      <div className="header">
+        auto-sweeper <div className="money">${snap.money}</div>
+      </div>
+      <div className="upgrade-list">
         Upgrades:
         {availableUnlockables}
       </div>
-      <br />
-      <div className="right-panel">
-        Purchased Upgrades:
-        {purchasedUnlockables}
-      </div>
+      {purchasedUnlockables.length > 0 && (
+        <div className="upgrade-list">
+          Purchased Upgrades:
+          {purchasedUnlockables}
+        </div>
+      )}
     </div>
   );
 }
