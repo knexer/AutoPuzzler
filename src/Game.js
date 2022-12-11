@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { proxy } from "valtio";
+import { proxy, useSnapshot } from "valtio";
 
 import BoardPanel from "./BoardPanel.js";
 import AutomationUnlockPanel from "./AutomationUnlockPanel";
@@ -16,11 +16,23 @@ const useUnlockState = () => {
 
 export default function Game(props) {
   const unlockState = useUnlockState();
+  const unlockStateSnap = useSnapshot(unlockState);
 
   return (
     <div className="game">
       <AutomationUnlockPanel unlockState={unlockState} />
-      <BoardPanel unlockState={unlockState} />
+      <div className="boards">
+        <BoardPanel unlockState={unlockState} />
+        {unlockStateSnap.isUnlocked("multiBoard1") && (
+          <BoardPanel unlockState={unlockState} />
+        )}
+        {unlockStateSnap.isUnlocked("multiBoard2") && (
+          <BoardPanel unlockState={unlockState} />
+        )}
+        {unlockStateSnap.isUnlocked("multiBoard3") && (
+          <BoardPanel unlockState={unlockState} />
+        )}
+      </div>
     </div>
   );
 }

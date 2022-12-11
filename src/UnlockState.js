@@ -50,6 +50,24 @@ export default class UnlockState {
       6,
       ["autoReveal", "autoFlag"]
     );
+    this.addUnlockable(
+      "multiBoard1",
+      "Add a second board with its own autoclicker.",
+      20,
+      ["autoClick"]
+    );
+    this.addUnlockable(
+      "multiBoard2",
+      "Add a third board with its own autoclicker.",
+      30,
+      ["multiBoard1"]
+    );
+    this.addUnlockable(
+      "multiBoard3",
+      "Add a fourth board with its own autoclicker.",
+      40,
+      ["multiBoard2"]
+    );
     this.addUnlockable("autoSpeed1", "Double automation speed.", 8, [
       "autoClick",
     ]);

@@ -9,6 +9,7 @@ ul {
 }
 
 .board-container {
+  flex-shrink: 0;
   width: 400px;
   height: 400px;
   border: 1px solid #000;
@@ -108,11 +109,19 @@ ul {
   gap: 20px;
 }
 
+.boards {
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .left-panel {
   width: 500px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex-shrink: 0;
 }
 
 .upgrade-list{
