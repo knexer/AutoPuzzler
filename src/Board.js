@@ -58,7 +58,7 @@ export default function Board(props) {
   const status = () => {
     if (gameLose)
       return (
-        <div>
+        <div className="status">
           <div>Mine found the hard way - you lose!</div>
           <button type="button" onClick={() => props.onGameEnd(model, false)}>
             Abandon Game
@@ -67,14 +67,18 @@ export default function Board(props) {
       );
     if (gameWin)
       return (
-        <div>
+        <div className="status">
           <div>All mines found - you win!</div>
           <button type="button" onClick={() => props.onGameEnd(model, true)}>
             Claim Spoils - ${model.mines}
           </button>
         </div>
       );
-    return `Flagged ${modelSnap.numFlaggedSquares} of ${props.mines} mines.`;
+    return (
+      <div className="status">
+        Flagged {modelSnap.numFlaggedSquares} of {props.mines} mines.
+      </div>
+    );
   };
 
   const renderSquare = (x, y) => {
@@ -100,8 +104,12 @@ export default function Board(props) {
 
   return (
     <div>
-      <div className="status">{status()}</div>
-      {Array.from({ length: props.height }, (_, i) => renderRow(i))}
+      <div className="board-container">
+        <div>
+          {Array.from({ length: props.height }, (_, i) => renderRow(i))}
+        </div>
+        {status()}
+      </div>
     </div>
   );
 }

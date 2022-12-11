@@ -21,19 +21,17 @@ export default function BoardPanel(props) {
 
   if (started) {
     return (
-      <div className="game-board">
-        <Board
-          width={width}
-          height={height}
-          mines={mines}
-          onGameEnd={(boardModel, win) => {
-            console.log("game end");
-            setStarted(false);
-            if (win) unlockState.onWin(boardModel);
-          }}
-          automationConfig={unlockStateSnap.getUnlockedUpgrades()}
-        />
-      </div>
+      <Board
+        width={width}
+        height={height}
+        mines={mines}
+        onGameEnd={(boardModel, win) => {
+          console.log("game end");
+          setStarted(false);
+          if (win) unlockState.onWin(boardModel);
+        }}
+        automationConfig={unlockStateSnap.getUnlockedUpgrades()}
+      />
     );
   } else {
     const renderNewGameButton = (width, height, mines, text) => {
@@ -47,7 +45,7 @@ export default function BoardPanel(props) {
       );
     };
     return (
-      <div className="game-info">
+      <div className="board-container">
         {renderNewGameButton(4, 4, 3, "New Smol Board")}
         {unlockStateSnap.isUnlocked("boardMedium")
           ? renderNewGameButton(6, 6, 6, "New Medium Board")
