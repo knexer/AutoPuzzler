@@ -6,6 +6,7 @@ export default class BoardPlayer {
     this.automationConfig = automationConfig;
     this.timeoutId = null;
     this.automationLoc = { x: 0, y: 0 };
+    this.lastStartedVersion = -1;
   }
 
   setAutomationConfig(automationConfig) {
@@ -76,6 +77,14 @@ export default class BoardPlayer {
     // Skip running for now if automation isn't unlocked yet.
     if (!this.automationConfig.autoClick) {
       return;
+    }
+
+    if (this.automationLoc.x === 0 && this.automationLoc.y === 0) {
+      // Skip running for now if the board hasn't changed since we started our loop.
+      if (this.lastStartedVersion === this.model.version) {
+        return;
+      }
+      this.lastStartedVersion = this.model.version;
     }
 
     const modelSnapNotProxied = snapshot(this.model);

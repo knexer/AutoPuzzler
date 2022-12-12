@@ -46,6 +46,7 @@ export default class BoardModel {
     this.isLost = false;
     this.numFlaggedSquares = 0;
     this.squares = Array[0];
+    this.version = 0;
   }
 
   handleSquareChanged(loc) {
@@ -60,6 +61,8 @@ export default class BoardModel {
     this.numFlaggedSquares = this.allSquares().filter(
       ({ square }) => square.flagged
     ).length;
+
+    this.version++;
   }
 
   squareAt({ x, y }) {
