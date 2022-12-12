@@ -81,6 +81,12 @@ export default class UnlockState {
       "autoSpeed3",
     ]);
     this.addUnlockable(
+      "twoWorkers",
+      "Add another autoclicker to each board that runs in the opposite direction.",
+      32,
+      ["autoSpeed1"]
+    );
+    this.addUnlockable(
       "boardMedium",
       "Play on a bigger board, with more mines, worth more money.",
       10,

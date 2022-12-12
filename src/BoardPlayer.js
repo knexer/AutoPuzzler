@@ -1,12 +1,20 @@
-import { snapshot } from "valtio";
-
 export default class BoardPlayer {
-  constructor(model, automationConfig) {
+  constructor(model, automationConfig, reverse = false) {
     this.model = model;
     this.automationConfig = automationConfig;
     this.timeoutId = null;
-    this.automationLoc = { x: 0, y: 0 };
+    this.automationIndex = 0;
+    this.automationReverse = reverse;
     this.lastStartedVersion = -1;
+  }
+
+  get automationLoc() {
+    const x = this.automationIndex % this.model.width;
+    const y = Math.floor(this.automationIndex / this.model.width);
+    return {
+      x: this.automationReverse ? this.model.width - 1 - x : x,
+      y: this.automationReverse ? this.model.height - 1 - y : y,
+    };
   }
 
   setAutomationConfig(automationConfig) {
@@ -79,7 +87,7 @@ export default class BoardPlayer {
       return;
     }
 
-    if (this.automationLoc.x === 0 && this.automationLoc.y === 0) {
+    if (this.automationIndex === 0) {
       // Skip running for now if the board hasn't changed since we started our loop.
       if (this.lastStartedVersion === this.model.version) {
         return;
@@ -87,26 +95,18 @@ export default class BoardPlayer {
       this.lastStartedVersion = this.model.version;
     }
 
-    const modelSnapNotProxied = snapshot(this.model);
     // Simulate a left and/or right click on the square at the next automation location.
-    const square = modelSnapNotProxied.squareAt(this.automationLoc);
+    const square = this.model.squareAt(this.automationLoc);
     if (square.revealed) {
-      this.applyAutomationRules(this.automationLoc, modelSnapNotProxied);
+      this.applyAutomationRules(this.automationLoc, this.model);
     }
 
     // Move to the next square.
-    this.model.squareAt(this.automationLoc).automationFocus = false;
-    this.automationLoc = {
-      x: this.automationLoc.x + 1,
-      y: this.automationLoc.y,
-    };
-    if (this.automationLoc.x >= this.model.width) {
-      this.automationLoc = {
-        x: 0,
-        y: (this.automationLoc.y + 1) % this.model.height,
-      };
-    }
-    this.model.squareAt(this.automationLoc).automationFocus = true;
+    if (this.model.squareAt(this.automationLoc).automationFocus > 0)
+      this.model.squareAt(this.automationLoc).automationFocus--;
+    this.automationIndex =
+      (this.automationIndex + 1) % (this.model.width * this.model.height);
+    this.model.squareAt(this.automationLoc).automationFocus++;
   }
 
   startInterval() {

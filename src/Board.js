@@ -31,26 +31,38 @@ const useModel = (props) => {
   return { model: modelRef.current, modelSnap: useSnapshot(modelRef.current) };
 };
 
-const useBoardPlayer = (props, model) => {
+const useBoardPlayer = (props, model, reverse) => {
   const boardPlayerRef = useRef(null);
-  if (boardPlayerRef.current === null) {
-    boardPlayerRef.current = new BoardPlayer(model, props.automationConfig);
+  if (
+    boardPlayerRef.current === null &&
+    (!reverse || props.automationConfig.twoWorkers)
+  ) {
+    boardPlayerRef.current = new BoardPlayer(
+      model,
+      props.automationConfig,
+      reverse
+    );
   }
 
   useEffect(() => {
+    if (!boardPlayerRef.current) return;
     boardPlayerRef.current.startInterval();
 
     return () => boardPlayerRef.current.stopInterval();
-  }, []);
+  }, [props.automationConfig.twoWorkers]);
 
-  boardPlayerRef.current.setAutomationConfig(props.automationConfig);
+  if (boardPlayerRef.current) {
+    boardPlayerRef.current.setAutomationConfig(props.automationConfig);
+  }
 
   return boardPlayerRef.current;
 };
 
 export default function Board(props) {
   const { model, modelSnap } = useModel(props);
-  const boardPlayer = useBoardPlayer(props, model);
+  const boardPlayer = useBoardPlayer(props, model, false);
+  // Create a second BoardPlayer for the reverse-direction automation worker.
+  useBoardPlayer(props, model, true);
 
   const gameWin = modelSnap.isWon;
   const gameLose = modelSnap.isLost;
