@@ -46,7 +46,7 @@ export default class UnlockState {
     );
     this.addUnlockable(
       "autoClick",
-      "Apply click rules to a square, four times per second.",
+      "Apply click rules to four squares per second.",
       6,
       ["autoReveal", "autoFlag"]
     );
