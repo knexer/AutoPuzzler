@@ -8,6 +8,7 @@ import GameState from "./GameState";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const gameState = proxy(new GameState());
+gameState.init();
 root.render(
   <StrictMode>
     {/* eslint-disable-next-line valtio/state-snapshot-rule */}

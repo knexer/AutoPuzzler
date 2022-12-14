@@ -8,28 +8,9 @@ import BoardModel, {
 import BoardPlayer from "./BoardPlayer.js";
 import Square from "./Square.js";
 
-const initModel = (props) => {
-  const model = proxy(new BoardModel(props.width, props.height, props.mines));
-  initBoard(model);
-  populateBoard(model);
-  if (
-    props.automationConfig.startWithRevealedSquare ||
-    props.automationConfig.startWithRevealedZero
-  ) {
-    revealStartingSpace(model, props.automationConfig.startWithRevealedZero);
-  }
-
-  return model;
-};
-
-const useModel = (props) => {
-  const modelRef = useRef(null);
-  if (modelRef.current === null) {
-    modelRef.current = initModel(props);
-  }
-
-  return { model: modelRef.current, modelSnap: useSnapshot(modelRef.current) };
-};
+// TODO:
+// move the useBoardPlayer stuff to model side as well.
+// Yay! This will do very little, and p much only view side stuff, after this
 
 const useBoardPlayer = (props, model, reverse) => {
   const boardPlayerRef = useRef(null);
@@ -59,7 +40,11 @@ const useBoardPlayer = (props, model, reverse) => {
 };
 
 export default function Board(props) {
-  const { model, modelSnap } = useModel(props);
+  const model = props.model;
+  const modelSnap = useSnapshot(model);
+  const width = modelSnap.width;
+  const height = modelSnap.height;
+
   const boardPlayer = useBoardPlayer(props, model, false);
   // Create a second BoardPlayer for the reverse-direction automation worker.
   useBoardPlayer(props, model, true);
@@ -88,7 +73,7 @@ export default function Board(props) {
       );
     return (
       <div className="status">
-        Flagged {modelSnap.numFlaggedSquares} of {props.mines} mines.
+        Flagged {modelSnap.numFlaggedSquares} of {model.mines} mines.
       </div>
     );
   };
@@ -96,7 +81,7 @@ export default function Board(props) {
   const renderSquare = (x, y) => {
     return (
       <Square
-        key={y * props.width + x}
+        key={y * width + x}
         onClick={() => boardPlayer.handleClick({ x, y })}
         onFlag={(flagged) => boardPlayer.handleFlag({ x, y }, flagged)}
         gameWin={gameWin}
@@ -109,7 +94,7 @@ export default function Board(props) {
   const renderRow = (y) => {
     return (
       <div className="board-row" key={y}>
-        {Array.from({ length: props.width }, (_, i) => renderSquare(i, y))}
+        {Array.from({ length: width }, (_, i) => renderSquare(i, y))}
       </div>
     );
   };
@@ -117,9 +102,7 @@ export default function Board(props) {
   return (
     <div>
       <div className="board-container">
-        <div>
-          {Array.from({ length: props.height }, (_, i) => renderRow(i))}
-        </div>
+        <div>{Array.from({ length: height }, (_, i) => renderRow(i))}</div>
         {status()}
       </div>
     </div>
