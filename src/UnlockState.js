@@ -1,6 +1,5 @@
 export default class UnlockState {
   constructor() {
-    this.money = 0;
     this.unlockables = [];
     this.addUnlockable(
       "autoReveal",
@@ -129,9 +128,5 @@ export default class UnlockState {
       enabled: false,
       reqs: reqs,
     });
-  }
-
-  onWin(boardModel) {
-    this.money += boardModel.mines;
   }
 }

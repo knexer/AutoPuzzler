@@ -28,7 +28,7 @@ export default function BoardPanel(props) {
         onGameEnd={(boardModel, win) => {
           console.log("game end");
           setStarted(false);
-          if (win) unlockState.onWin(boardModel);
+          if (win) props.onWin(boardModel);
         }}
         automationConfig={unlockStateSnap.getUnlockedUpgrades()}
       />
