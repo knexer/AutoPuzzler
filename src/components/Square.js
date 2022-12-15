@@ -26,19 +26,18 @@ const isInteractive = (props, model) => {
 
 export default function Square(props) {
   const modelSnap = useSnapshot(props.model);
+  const interactive = isInteractive(props, modelSnap);
   return (
     <button
       className={
         "square" +
-        (isInteractive(props, modelSnap)
-          ? " unrevealed-square"
-          : " revealed-square") +
+        (interactive ? " unrevealed-square" : " revealed-square") +
         (modelSnap.automationFocus ? " automation-focus" : "")
       }
-      onClick={props.onClick}
+      onClick={interactive ? props.onClick : undefined}
       onContextMenu={(e) => {
         e.preventDefault();
-        props.onFlag(!props.model.flagged);
+        interactive && props.onFlag(!props.model.flagged);
       }}
     >
       {display(props, modelSnap)}
