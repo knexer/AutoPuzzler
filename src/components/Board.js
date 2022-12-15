@@ -10,6 +10,7 @@ export default function Board(props) {
 
   const gameWin = modelSnap.isWon;
   const gameLose = modelSnap.isLost;
+  const numFlaggedSquares = modelSnap.numFlaggedSquares;
 
   const status = () => {
     if (gameLose)
@@ -32,9 +33,8 @@ export default function Board(props) {
       );
     return (
       <div className="status">
-        {/* eslint-disable-next-line valtio/state-snapshot-rule */}
-        {"🚩".repeat(modelSnap.numFlaggedSquares) +
-          "💣".repeat(model.mines - modelSnap.numFlaggedSquares)}
+        {"🚩".repeat(numFlaggedSquares) +
+          "💣".repeat(model.mines - numFlaggedSquares)}
       </div>
     );
   };
