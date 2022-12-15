@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSnapshot } from "valtio";
 
 import Board from "./Board.js";
@@ -13,7 +13,7 @@ export default function BoardPanel(props) {
     return (
       <Board
         model={boardSlot.boardModel}
-        onGameEnd={boardSlot.completeGame}
+        onGameEnd={() => boardSlot.completeGame()}
         automationConfig={unlockStateSnap.getUnlockedUpgrades()}
       />
     );
@@ -27,12 +27,21 @@ export default function BoardPanel(props) {
     };
     return (
       <div className="board-container">
-        {renderNewGameButton(boardSlot.startSmallGame, "New Smol Board")}
+        {renderNewGameButton(
+          () => boardSlot.startSmallGame(),
+          "New Smol Board"
+        )}
         {unlockStateSnap.isUnlocked("boardMedium")
-          ? renderNewGameButton(boardSlot.startMediumGame, "New Medium Board")
+          ? renderNewGameButton(
+              () => boardSlot.startMediumGame(),
+              "New Medium Board"
+            )
           : ""}
         {unlockStateSnap.isUnlocked("boardLarge")
-          ? renderNewGameButton(boardSlot.startLargeGame, "New Big Board")
+          ? renderNewGameButton(
+              () => boardSlot.startLargeGame(),
+              "New Big Board"
+            )
           : ""}
       </div>
     );

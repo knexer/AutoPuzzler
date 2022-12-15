@@ -1,10 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { proxy, useSnapshot } from "valtio";
-import BoardModel, {
-  initBoard,
-  populateBoard,
-  revealStartingSpace,
-} from "./BoardModel.js";
+import { useSnapshot } from "valtio";
 import BoardPlayer from "./BoardPlayer.js";
 import Square from "./Square.js";
 
@@ -73,6 +68,7 @@ export default function Board(props) {
       );
     return (
       <div className="status">
+        {/* eslint-disable-next-line valtio/state-snapshot-rule */}
         Flagged {modelSnap.numFlaggedSquares} of {model.mines} mines.
       </div>
     );
