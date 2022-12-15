@@ -33,7 +33,8 @@ export default function Board(props) {
     return (
       <div className="status">
         {/* eslint-disable-next-line valtio/state-snapshot-rule */}
-        Flagged {modelSnap.numFlaggedSquares} of {model.mines} mines.
+        {"🚩".repeat(modelSnap.numFlaggedSquares) +
+          "💣".repeat(model.mines - modelSnap.numFlaggedSquares)}
       </div>
     );
   };
