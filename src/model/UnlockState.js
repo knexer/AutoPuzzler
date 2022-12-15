@@ -67,6 +67,12 @@ export default class UnlockState {
       40,
       ["multiBoard2"]
     );
+    this.addUnlockable(
+      "autoRestart",
+      "Automatically restart ended boards after ten seconds, at the largest unlocked size.",
+      40,
+      ["multiBoard2"]
+    );
     this.addUnlockable("autoSpeed1", "Double automation speed.", 8, [
       "autoClick",
     ]);

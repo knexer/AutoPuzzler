@@ -17,7 +17,9 @@ export default class BoardSlot {
   startGame(width, height, mines) {
     if (this.boardModel !== null) return;
 
-    this.boardModel = new BoardModel(width, height, mines);
+    this.boardModel = new BoardModel(width, height, mines, () =>
+      this.onGameCompleted()
+    );
     initBoard(this.boardModel);
     populateBoard(this.boardModel);
     const startWithZero = this.unlocks.isUnlocked("startWithRevealedZero");
@@ -34,6 +36,17 @@ export default class BoardSlot {
     );
 
     return this.boardModel;
+  }
+
+  onGameCompleted() {
+    if (this.unlocks.isUnlocked("autoRestart")) {
+      setTimeout(() => {
+        this.completeGame();
+        setTimeout(() => {
+          this.startLargestUnlockedGame();
+        }, 5000);
+      }, 5000);
+    }
   }
 
   completeGame() {
@@ -57,6 +70,15 @@ export default class BoardSlot {
   }
   startLargeGame() {
     return this.startGame(9, 9, 13);
+  }
+  startLargestUnlockedGame() {
+    if (this.unlocks.isUnlocked("boardLarge")) {
+      this.startLargeGame();
+    } else if (this.unlocks.isUnlocked("boardMedium")) {
+      this.startMediumGame();
+    } else {
+      this.startSmallGame();
+    }
   }
 
   handleInterval() {

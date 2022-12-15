@@ -38,10 +38,11 @@ const revealStartingSpace = (boardModel, mustBeZero) => {
 };
 
 export default class BoardModel {
-  constructor(width, height, mines) {
+  constructor(width, height, mines, onGameEnd) {
     this.width = width;
     this.height = height;
     this.mines = mines;
+    this.onGameEnd = onGameEnd;
     this.isWon = false;
     this.isLost = false;
     this.numFlaggedSquares = 0;
@@ -57,6 +58,10 @@ export default class BoardModel {
     this.isLost = this.allSquares().some(({ square }) => {
       return square.mine && square.revealed;
     });
+
+    if (this.isWon || this.isLost) {
+      this.onGameEnd();
+    }
 
     this.numFlaggedSquares = this.allSquares().filter(
       ({ square }) => square.flagged
