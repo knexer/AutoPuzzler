@@ -3,8 +3,8 @@ import { proxy } from "valtio";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import Game from "./Game.js";
-import GameState from "./GameState";
+import Game from "./components/Game.js";
+import GameState from "./model/GameState.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const gameState = proxy(new GameState());
