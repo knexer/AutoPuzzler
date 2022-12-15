@@ -64,13 +64,13 @@ export default class UnlockState {
     this.addUnlockable(
       "multiBoard3",
       "Add a fourth board with its own autoclicker.",
-      40,
+      50,
       ["multiBoard2"]
     );
     this.addUnlockable(
       "autoRestart",
       "Automatically restart ended boards after ten seconds, at the largest unlocked size.",
-      40,
+      50,
       ["multiBoard2"]
     );
     this.addUnlockable("autoSpeed1", "Double automation speed.", 8, [
@@ -88,13 +88,13 @@ export default class UnlockState {
     this.addUnlockable(
       "twoWorkers",
       "Add another autoclicker to each board that runs in the opposite direction.",
-      32,
+      50,
       ["autoSpeed1"]
     );
     this.addUnlockable(
       "boardMedium",
       "Play on a bigger board, with more mines, worth more money.",
-      10,
+      8,
       []
     );
     this.addUnlockable(
