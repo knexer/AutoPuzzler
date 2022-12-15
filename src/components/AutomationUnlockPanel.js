@@ -1,21 +1,25 @@
 import React from "react";
 import { useSnapshot } from "valtio";
 
-const renderUnlockable = (unlockableSnap, unlockable, money, gameState) => {
+import unlockConfig from "../UnlockConfig";
+
+const renderUnlockable = (unlockable, unlockStateSnap, money, gameState) => {
   return (
-    <label key={unlockableSnap.key}>
+    <label key={unlockable.key}>
       <button
         type="button"
         className="upgrade-button"
-        disabled={unlockableSnap.cost > money || unlockableSnap.enabled}
+        disabled={
+          unlockable.cost > money || unlockStateSnap.isUnlocked(unlockable.key)
+        }
         onClick={() => {
-          unlockable.enabled = true;
+          gameState.unlocks.unlockUpgrade(unlockable.key);
           gameState.money -= unlockable.cost;
         }}
       >
-        ${unlockableSnap.cost}
+        ${unlockable.cost}
       </button>
-      {" " + unlockableSnap.desc}
+      {" " + unlockable.desc}
     </label>
   );
 };
@@ -26,16 +30,17 @@ export default function AutomationUnlockPanel(props) {
 
   const availableUnlockables = [];
   const purchasedUnlockables = [];
-  for (let i = 0; i < unlockStateSnap.unlockables.length; i++) {
+  for (const key of unlockConfig.unlockables.keys()) {
+    const unlockable = unlockConfig.getUnlockable(key);
     const renderedUnlockable = renderUnlockable(
-      unlockStateSnap.unlockables[i],
-      props.gameState.unlocks.unlockables[i],
+      unlockable,
+      unlockStateSnap,
       gameStateSnap.money,
       props.gameState
     );
-    if (unlockStateSnap.unlockables[i].enabled) {
+    if (unlockStateSnap.isUnlocked(key)) {
       purchasedUnlockables.push(renderedUnlockable);
-    } else if (unlockStateSnap.isAvailable(unlockStateSnap.unlockables[i])) {
+    } else if (unlockStateSnap.isAvailable(key)) {
       availableUnlockables.push(renderedUnlockable);
     }
   }
