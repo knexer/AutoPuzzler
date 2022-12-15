@@ -3,15 +3,20 @@ import BoardModel, {
   populateBoard,
   revealStartingSpace,
 } from "./BoardModel.js";
+import BoardPlayer from "./BoardPlayer.js";
 
 export default class BoardSlot {
   constructor(unlocks, addMoney) {
     this.unlocks = unlocks;
     this.addMoney = addMoney;
     this.boardModel = null;
+    this.boardPlayer = null;
+    this.reverseBoardPlayer = null;
   }
 
   startGame(width, height, mines) {
+    if (this.boardModel !== null) return;
+
     this.boardModel = new BoardModel(width, height, mines);
     initBoard(this.boardModel);
     populateBoard(this.boardModel);
@@ -20,6 +25,13 @@ export default class BoardSlot {
     if (this.unlocks.isUnlocked("startWithRevealedSquare") || startWithZero) {
       revealStartingSpace(this.boardModel, startWithZero);
     }
+
+    this.boardPlayer = new BoardPlayer(this.boardModel, this.unlocks, false);
+    this.reverseBoardPlayer = new BoardPlayer(
+      this.boardModel,
+      this.unlocks,
+      true
+    );
 
     return this.boardModel;
   }
@@ -33,18 +45,22 @@ export default class BoardSlot {
 
     if (this.boardModel.isWon) this.addMoney(this.boardModel.mines);
     this.boardModel = null;
+    this.boardPlayer = null;
+    this.reverseBoardPlayer = null;
   }
 
   startSmallGame() {
-    if (this.boardModel !== null) return;
     return this.startGame(4, 4, 3);
   }
   startMediumGame() {
-    if (this.boardModel !== null) return;
     return this.startGame(6, 6, 6);
   }
   startLargeGame() {
-    if (this.boardModel !== null) return;
     return this.startGame(9, 9, 13);
+  }
+
+  handleInterval() {
+    if (this.boardPlayer) this.boardPlayer.handleInterval();
+    if (this.reverseBoardPlayer) this.reverseBoardPlayer.handleInterval();
   }
 }

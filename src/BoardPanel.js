@@ -13,6 +13,7 @@ export default function BoardPanel(props) {
     return (
       <Board
         model={boardSlot.boardModel}
+        player={boardSlot.boardPlayer}
         onGameEnd={() => boardSlot.completeGame()}
         automationConfig={unlockStateSnap.getUnlockedUpgrades()}
       />

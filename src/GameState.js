@@ -32,4 +32,38 @@ export default class GameState {
       new BoardSlot(this.unlocks, (money) => this.addMoney(money))
     );
   }
+
+  handleInterval() {
+    this.timeoutId = null;
+
+    // Restart interval immediately in case we crash below.
+    this.startInterval();
+
+    // Skip running for now if automation isn't unlocked yet.
+    if (!this.unlocks.isUnlocked("autoClick")) {
+      return;
+    }
+
+    this.boardSlots.forEach((slot) => slot.handleInterval());
+  }
+
+  startInterval() {
+    this.stopInterval();
+    let numIntervalUpgrades = 0;
+    if (this.unlocks.isUnlocked("autoSpeed1")) numIntervalUpgrades++;
+    if (this.unlocks.isUnlocked("autoSpeed2")) numIntervalUpgrades++;
+    if (this.unlocks.isUnlocked("autoSpeed3")) numIntervalUpgrades++;
+    if (this.unlocks.isUnlocked("autoSpeed4")) numIntervalUpgrades++;
+    this.timeoutId = setTimeout(
+      () => this.handleInterval(),
+      250 / Math.pow(2, numIntervalUpgrades)
+    );
+  }
+
+  stopInterval() {
+    if (this.timeoutId !== null) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+  }
 }

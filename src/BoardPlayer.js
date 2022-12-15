@@ -1,11 +1,16 @@
 export default class BoardPlayer {
-  constructor(model, automationConfig, reverse = false) {
+  constructor(model, unlocks, reverse = false) {
     this.model = model;
-    this.automationConfig = automationConfig;
+    this.unlocks = unlocks;
     this.timeoutId = null;
     this.automationIndex = 0;
     this.automationReverse = reverse;
     this.lastStartedVersion = -1;
+  }
+
+  get automationConfig() {
+    // TODO this garbage perf
+    return this.unlocks.getUnlockedUpgrades();
   }
 
   get automationLoc() {
@@ -15,10 +20,6 @@ export default class BoardPlayer {
       x: this.automationReverse ? this.model.width - 1 - x : x,
       y: this.automationReverse ? this.model.height - 1 - y : y,
     };
-  }
-
-  setAutomationConfig(automationConfig) {
-    this.automationConfig = automationConfig;
   }
 
   handleClick(loc, snapshot) {
@@ -74,21 +75,16 @@ export default class BoardPlayer {
   }
 
   handleInterval() {
-    this.timeoutId = null;
-
-    // Stop running forever if the board is finished.
+    // Nothing to do if the board is finished.
     if (this.model.isWon || this.model.isLost) return;
 
-    // Restart interval immediately in case we crash below.
-    this.startInterval();
-
-    // Skip running for now if automation isn't unlocked yet.
-    if (!this.automationConfig.autoClick) {
+    // Nothing to do if we're reverse and reversed autoclicker isn't unlocked yet.
+    if (this.automationReverse && !this.automationConfig.twoWorkers) {
       return;
     }
 
     if (this.automationIndex === 0) {
-      // Skip running for now if the board hasn't changed since we started our loop.
+      // Nothing to do if the board hasn't changed since we started our previous loop.
       if (this.lastStartedVersion === this.model.version) {
         return;
       }
@@ -107,25 +103,5 @@ export default class BoardPlayer {
     this.automationIndex =
       (this.automationIndex + 1) % (this.model.width * this.model.height);
     this.model.squareAt(this.automationLoc).automationFocus++;
-  }
-
-  startInterval() {
-    this.stopInterval();
-    let numIntervalUpgrades = 0;
-    if (this.automationConfig.autoSpeed1) numIntervalUpgrades++;
-    if (this.automationConfig.autoSpeed2) numIntervalUpgrades++;
-    if (this.automationConfig.autoSpeed3) numIntervalUpgrades++;
-    if (this.automationConfig.autoSpeed4) numIntervalUpgrades++;
-    this.timeoutId = setTimeout(
-      () => this.handleInterval(),
-      250 / Math.pow(2, numIntervalUpgrades)
-    );
-  }
-
-  stopInterval() {
-    if (this.timeoutId !== null) {
-      clearTimeout(this.timeoutId);
-      this.timeoutId = null;
-    }
   }
 }
