@@ -19,19 +19,19 @@ const display = (props, model) => {
   return "";
 };
 
-const isInteractive = (props, model) => {
-  if (props.gameWin || props.gameLose) return false;
-  return !model.revealed && !model.flagged;
+const isInteractive = (props) => {
+  return !props.gameWin && !props.gameLose;
 };
 
 export default function Square(props) {
   const modelSnap = useSnapshot(props.model);
   const interactive = isInteractive(props, modelSnap);
+  const highlight = interactive && !modelSnap.revealed && !modelSnap.flagged;
   return (
     <button
       className={
         "square" +
-        (interactive ? " unrevealed-square" : " revealed-square") +
+        (highlight ? " unrevealed-square" : " revealed-square") +
         (modelSnap.automationFocus ? " automation-focus" : "")
       }
       onClick={interactive ? props.onClick : undefined}
