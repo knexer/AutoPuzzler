@@ -11,6 +11,10 @@ const gameState = proxy(new GameState());
 gameState.init();
 gameState.startInterval();
 
+window.cheat = function () {
+  gameState.addMoney(100);
+};
+
 root.render(
   <StrictMode>
     {/* eslint-disable-next-line valtio/state-snapshot-rule */}

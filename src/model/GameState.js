@@ -7,7 +7,7 @@ import UnlockState from "./UnlockState.js";
 // Owns the player's money, the upgrades the player has unlocked, and (shortly) all of the currently going games.
 export default class GameState {
   constructor() {
-    this.money = 100;
+    this.money = 0;
     this.unlocks = proxy(new UnlockState());
     this.boardSlots = [];
   }
