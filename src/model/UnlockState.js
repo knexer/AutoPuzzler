@@ -1,8 +1,10 @@
+import { proxyMap } from "valtio/utils";
+
 import unlockConfig from "../UnlockConfig";
 
 export default class UnlockState {
   constructor() {
-    this.unlocks = new Map(
+    this.unlocks = new proxyMap(
       Array.from(unlockConfig.unlockables.keys).map((key) => [key, false])
     );
   }
