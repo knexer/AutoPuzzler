@@ -60,6 +60,12 @@ export default function AutomationUnlockPanel(props) {
           {purchasedUnlockables}
         </div>
       )}
+      <div>
+        Autosaves every 5 seconds.{" "}
+        <button className="reset-save-button" onClick={props.resetSave}>
+          !!! Reset Save !!!
+        </button>
+      </div>
     </div>
   );
 }

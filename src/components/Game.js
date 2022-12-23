@@ -11,7 +11,10 @@ export default function Game(props) {
 
   return (
     <div className="game">
-      <AutomationUnlockPanel gameState={props.gameState} />
+      <AutomationUnlockPanel
+        gameState={props.gameState}
+        resetSave={props.resetSave}
+      />
       <div className="boards">
         <BoardPanel
           boardSlot={props.gameState.boardSlots[0]}

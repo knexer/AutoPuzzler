@@ -15,6 +15,10 @@ gameState.startInterval();
 window.cheat = function () {
   gameState.addMoney(100);
 };
+const resetSave = function () {
+  localStorage.removeItem("save");
+  window.location.reload();
+};
 
 const save = function () {
   localStorage.setItem("save", JSON.stringify(gameState.serialize()));
@@ -26,6 +30,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
     {/* eslint-disable-next-line valtio/state-snapshot-rule */}
-    <Game gameState={gameState} />
+    <Game gameState={gameState} resetSave={resetSave} />
   </StrictMode>
 );

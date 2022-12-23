@@ -138,6 +138,11 @@ ul {
   width: 50px;
 }
 
+.reset-save-button{
+  width:120px;
+  color:rgb(255, 72, 72)
+}
+
 .header {
   font-size: large;
   display: flex;
