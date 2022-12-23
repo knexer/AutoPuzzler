@@ -3,10 +3,20 @@ import { proxyMap } from "valtio/utils";
 import unlockConfig from "../UnlockConfig";
 
 export default class UnlockState {
-  constructor() {
+  constructor(deserialized = null) {
+    const deserializedMap = deserialized
+      ? new Map(Object.entries(deserialized))
+      : new Map();
     this.unlocks = new proxyMap(
-      Array.from(unlockConfig.unlockables.keys).map((key) => [key, false])
+      Array.from(unlockConfig.unlockables.keys()).map((key) => [
+        key,
+        deserializedMap.get(key),
+      ])
     );
+  }
+
+  serialize() {
+    return this.getUnlockedUpgrades();
   }
 
   unlockUpgrade(key) {
