@@ -1,5 +1,7 @@
 import React from "react";
 import { useSnapshot } from "valtio";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 
 import Board from "./Board.js";
 
@@ -11,23 +13,25 @@ export default function BoardPanel(props) {
 
   if (boardSlotSnap.boardModel !== null) {
     return (
-      <Board
-        model={boardSlot.boardModel}
-        player={boardSlot.boardPlayer}
-        onGameEnd={() => boardSlot.completeGame()}
-        automationConfig={unlockStateSnap.getUnlockedUpgrades()}
-      />
+      <Paper elevation={4} className="board-container">
+        <Board
+          model={boardSlot.boardModel}
+          player={boardSlot.boardPlayer}
+          onGameEnd={() => boardSlot.completeGame()}
+          automationConfig={unlockStateSnap.getUnlockedUpgrades()}
+        />
+      </Paper>
     );
   } else {
     const renderNewGameButton = (startGame, text) => {
       return (
-        <button type="button" onClick={startGame}>
+        <Button variant="contained" onClick={startGame}>
           {text}
-        </button>
+        </Button>
       );
     };
     return (
-      <div className="board-container">
+      <Paper elevation={4} className="board-container">
         {renderNewGameButton(
           () => boardSlot.startSmallGame(),
           "New Smol Board"
@@ -44,7 +48,7 @@ export default function BoardPanel(props) {
               "New Big Board"
             )
           : ""}
-      </div>
+      </Paper>
     );
   }
 }

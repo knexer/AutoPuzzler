@@ -1,26 +1,42 @@
 import React from "react";
 import { useSnapshot } from "valtio";
+import {
+  Button,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Paper,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import unlockConfig from "../UnlockConfig";
 
 const renderUnlockable = (unlockable, unlockStateSnap, money, gameState) => {
   return (
-    <label key={unlockable.key}>
-      <button
-        type="button"
-        className="upgrade-button"
-        disabled={
-          unlockable.cost > money || unlockStateSnap.isUnlocked(unlockable.key)
-        }
-        onClick={() => {
-          gameState.unlocks.unlockUpgrade(unlockable.key);
-          gameState.money -= unlockable.cost;
-        }}
-      >
-        ${unlockable.cost}
-      </button>
-      {" " + unlockable.desc}
-    </label>
+    <ListItem key={unlockable.key}>
+      <Paper elevation={1}>
+        <ListItemButton
+          disabled={
+            unlockable.cost > money ||
+            unlockStateSnap.isUnlocked(unlockable.key)
+          }
+          onClick={() => {
+            gameState.unlocks.unlockUpgrade(unlockable.key);
+            gameState.money -= unlockable.cost;
+          }}
+        >
+          <ListItemText
+            primary={unlockable.title + ": $" + unlockable.cost}
+            secondary={unlockable.desc}
+          />
+        </ListItemButton>
+      </Paper>
+    </ListItem>
   );
 };
 
@@ -47,24 +63,41 @@ export default function AutomationUnlockPanel(props) {
 
   return (
     <div className="left-panel">
-      <div className="header">
+      <Typography variant="h3" className="header">
         auto-sweeper <div className="money">${gameStateSnap.money}</div>
-      </div>
-      <div className="upgrade-list">
-        Upgrades:
-        {availableUnlockables}
-      </div>
+      </Typography>
+      <Accordion disableGutters elevation={4} defaultExpanded={true}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h5">Upgrades:</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <List dense disablePadding>
+            {availableUnlockables}
+          </List>
+        </AccordionDetails>
+      </Accordion>
       {purchasedUnlockables.length > 0 && (
-        <div className="upgrade-list">
-          Purchased Upgrades:
-          {purchasedUnlockables}
-        </div>
+        <Accordion disableGutters elevation={4}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5">Purchased Upgrades:</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List dense disablePadding>
+              {purchasedUnlockables}
+            </List>
+          </AccordionDetails>
+        </Accordion>
       )}
       <div>
         Autosaves every 5 seconds.{" "}
-        <button className="reset-save-button" onClick={props.resetSave}>
+        <Button
+          variant="text"
+          color="error"
+          size="small"
+          onClick={props.resetSave}
+        >
           !!! Reset Save !!!
-        </button>
+        </Button>
       </div>
     </div>
   );

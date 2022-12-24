@@ -1,8 +1,5 @@
 body {
-  font: 16px "Century Gothic", Futura, sans-serif;
   margin: 20px;
-  background-color: #333;
-  color: #eee;
 }
 
 ol,
@@ -14,7 +11,6 @@ ul {
   flex-shrink: 0;
   width: 400px;
   height: 400px;
-  border: 2px solid #bbb;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -40,6 +36,14 @@ ul {
   flex-direction: column;
   align-items: center;
   gap: 5px;
+}
+
+.mine-counter {
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-left:10px;
+  padding-right:10px;
+  letter-spacing: 50px;
 }
 
 .square {
@@ -70,7 +74,7 @@ ul {
 }
 
 .automation-focus {
-  background: #d4ffe4;
+  background: #cffde0;
 }
 
 .kbd-navigation .square:focus {
@@ -115,14 +119,17 @@ ul {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  padding-top:20px;
   gap: 20px;
+  align-content: flex-start;
 }
 
 .left-panel {
-  width: 500px;
+  width: 600px;
+  padding-left: 10px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -130,7 +137,6 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 2px solid #bbb;
   padding: 10px;
 }
 
@@ -148,6 +154,7 @@ ul {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-top: 10px;
   padding-left: 10px;
   padding-right: 10px;
 }

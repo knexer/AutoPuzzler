@@ -1,5 +1,7 @@
 import React from "react";
 import { useSnapshot } from "valtio";
+import { Button, Paper, Typography } from "@mui/material/";
+
 import Square from "./Square.js";
 
 export default function Board(props) {
@@ -16,25 +18,33 @@ export default function Board(props) {
     if (gameLose)
       return (
         <div className="status">
-          <div>Mine found the hard way - you lose!</div>
-          <button type="button" onClick={() => props.onGameEnd(model, false)}>
+          <Button
+            variant="contained"
+            onClick={() => props.onGameEnd(model, false)}
+          >
             Abandon Game
-          </button>
+          </Button>
         </div>
       );
     if (gameWin)
       return (
         <div className="status">
-          <div>All mines found - you win!</div>
-          <button type="button" onClick={() => props.onGameEnd(model, true)}>
+          <Button
+            variant="contained"
+            onClick={() => props.onGameEnd(model, true)}
+          >
             Claim Spoils - ${model.mines}
-          </button>
+          </Button>
         </div>
       );
     return (
       <div className="status">
-        {"🚩".repeat(numFlaggedSquares) +
-          "💣".repeat(model.mines - numFlaggedSquares)}
+        <Paper elevation={1}>
+          <Typography className="mine-counter">
+            {"🚩".repeat(numFlaggedSquares) +
+              "💣".repeat(model.mines - numFlaggedSquares)}
+          </Typography>
+        </Paper>
       </div>
     );
   };
@@ -62,10 +72,8 @@ export default function Board(props) {
 
   return (
     <div>
-      <div className="board-container">
-        <div>{Array.from({ length: height }, (_, i) => renderRow(i))}</div>
-        {status()}
-      </div>
+      <div>{Array.from({ length: height }, (_, i) => renderRow(i))}</div>
+      {status()}
     </div>
   );
 }
