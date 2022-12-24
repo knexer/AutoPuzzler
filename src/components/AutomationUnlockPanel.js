@@ -31,7 +31,7 @@ const renderUnlockable = (unlockable, unlockStateSnap, money, gameState) => {
           }}
         >
           <ListItemText
-            primary={unlockable.title + ": $" + unlockable.cost}
+            primary={"$" + unlockable.cost + ": " + unlockable.title}
             secondary={unlockable.desc}
           />
         </ListItemButton>
