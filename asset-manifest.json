@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/auto-puzzler/static/css/main.4559e2e8.css",
-    "main.js": "/auto-puzzler/static/js/main.ff9d7e0f.js",
+    "main.js": "/auto-puzzler/static/js/main.80adcf95.js",
     "static/media/roboto-all-500-normal.woff": "/auto-puzzler/static/media/roboto-all-500-normal.0ab669b7a0d19b178f57.woff",
     "static/media/roboto-all-700-normal.woff": "/auto-puzzler/static/media/roboto-all-700-normal.a457fde362a540fcadff.woff",
     "static/media/roboto-all-400-normal.woff": "/auto-puzzler/static/media/roboto-all-400-normal.c5d001fa922fa66a147f.woff",
@@ -36,10 +36,10 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/auto-puzzler/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/auto-puzzler/index.html",
     "main.4559e2e8.css.map": "/auto-puzzler/static/css/main.4559e2e8.css.map",
-    "main.ff9d7e0f.js.map": "/auto-puzzler/static/js/main.ff9d7e0f.js.map"
+    "main.80adcf95.js.map": "/auto-puzzler/static/js/main.80adcf95.js.map"
   },
   "entrypoints": [
     "static/css/main.4559e2e8.css",
-    "static/js/main.ff9d7e0f.js"
+    "static/js/main.80adcf95.js"
   ]
 }
