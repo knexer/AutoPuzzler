@@ -37,12 +37,18 @@ export default function Board(props) {
           </Button>
         </div>
       );
+    const correctFlags = "🚩".repeat(Math.min(model.mines, numFlaggedSquares));
+    const excessFlags = "⚠️".repeat(
+      Math.max(0, numFlaggedSquares - model.mines)
+    );
+    const unflaggedMines = "💣".repeat(
+      Math.max(0, model.mines - numFlaggedSquares)
+    );
     return (
       <div className="status">
         <Paper elevation={1}>
           <Typography className="mine-counter">
-            {"🚩".repeat(numFlaggedSquares) +
-              "💣".repeat(model.mines - numFlaggedSquares)}
+            {correctFlags + excessFlags + unflaggedMines}
           </Typography>
         </Paper>
       </div>

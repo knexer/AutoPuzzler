@@ -2,7 +2,10 @@ import React from "react";
 import { useSnapshot } from "valtio";
 
 const display = (props, model) => {
-  if (model.flagged) return "🚩";
+  if (model.flagged) {
+    if (props.gameLose && !model.mine) return "⚠️";
+    return "🚩";
+  }
   if (model.mine) {
     if (model.revealed) return "🤯";
     if (props.gameWin) return "🚩";
