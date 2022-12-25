@@ -6,6 +6,12 @@ export default class BoardPlayer {
     this.automationIndex = 0;
     this.automationReverse = reverse;
     this.lastStartedVersion = -1;
+
+    const automationConfig = this.automationConfig;
+    this.model.mulligans =
+      (automationConfig.mulligans1 ? 1 : 0) +
+      (automationConfig.mulligans2 ? 1 : 0) +
+      (automationConfig.mulligans3 ? 1 : 0);
   }
 
   get automationConfig() {
@@ -33,7 +39,12 @@ export default class BoardPlayer {
       this.applyAutomationRules(loc, readModel);
     }
 
-    this.model.squareAt(loc).revealed = true;
+    if (this.model.mulligans > 0 && readModel.squareAt(loc).mine) {
+      this.model.squareAt(loc).flagged = true;
+      this.model.mulligans--;
+    } else {
+      this.model.squareAt(loc).revealed = true;
+    }
   }
 
   handleFlag(loc, flagged, snapshot) {

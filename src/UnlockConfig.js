@@ -2,6 +2,27 @@ class UnlockConfig {
   constructor() {
     this.unlockables = new Map();
     this.addUnlockable(
+      "mulligans1",
+      "Mulligans 1",
+      "Get one mulligan (🛡️) that saves you if you would trigger a mine.",
+      3,
+      []
+    );
+    this.addUnlockable(
+      "mulligans2",
+      "Mulligans 2",
+      "Get a second mulligan (🛡️).",
+      30,
+      ["mulligans1"]
+    );
+    this.addUnlockable(
+      "mulligans3",
+      "Mulligans 3",
+      "Get a third mulligan (🛡️).",
+      100,
+      ["mulligans2"]
+    );
+    this.addUnlockable(
       "autoReveal",
       "Safe Auto-Reveal",
       "When clicking a revealed square: reveal adjacent squares, if it's safe to do so. Limited by your automation intelligence level.",

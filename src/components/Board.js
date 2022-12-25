@@ -14,6 +14,19 @@ export default function Board(props) {
   const gameLose = modelSnap.isLost;
   const numFlaggedSquares = modelSnap.numFlaggedSquares;
 
+  const mulliganDisplay = () => {
+    if (model.mulligans === 0) return "";
+    return (
+      <div className="mulligan-display">
+        <Paper elevation={1}>
+          <Typography className="mine-counter">
+            {"🛡️".repeat(model.mulligans)}
+          </Typography>
+        </Paper>
+      </div>
+    );
+  };
+
   const status = () => {
     if (gameLose)
       return (
@@ -78,6 +91,7 @@ export default function Board(props) {
 
   return (
     <div>
+      {mulliganDisplay()}
       <div>{Array.from({ length: height }, (_, i) => renderRow(i))}</div>
       {status()}
     </div>

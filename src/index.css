@@ -38,6 +38,18 @@ ul {
   gap: 5px;
 }
 
+.mulligan-display{
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
 .mine-counter {
   padding-top:5px;
   padding-bottom:5px;
