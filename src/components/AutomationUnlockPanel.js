@@ -61,6 +61,12 @@ export default function AutomationUnlockPanel(props) {
     }
   }
 
+  availableUnlockables.sort(
+    (a, b) =>
+      unlockConfig.getUnlockable(a.key).cost -
+      unlockConfig.getUnlockable(b.key).cost
+  );
+
   return (
     <div className="left-panel">
       <Typography variant="h3" className="header">
