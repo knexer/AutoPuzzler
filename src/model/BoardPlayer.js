@@ -58,28 +58,21 @@ export default class BoardPlayer {
 
   canApplyToSquare(square) {
     const mines = square.adjacentMines;
-    if (mines === 0) return true;
-    if (mines === 1 && this.automationConfig.automationLevel1) return true;
-    if (mines === 2 && this.automationConfig.automationLevel2) return true;
-    if (this.automationConfig.automationLevelMax) return true;
-    return false;
+    if (mines === 0) return this.automationConfig.automate0;
+    if (mines === 1) return this.automationConfig.automate1;
+    if (mines === 2) return this.automationConfig.automate2;
+    return this.automationConfig.automate3;
   }
 
   applyAutomationRules(loc, readModel) {
     const square = readModel.squareAt(loc);
 
     if (this.canApplyToSquare(square)) {
-      if (
-        this.automationConfig.autoReveal &&
-        readModel.revealAdjacentSquaresIsSafe(loc)
-      ) {
+      if (readModel.revealAdjacentSquaresIsSafe(loc)) {
         this.model.revealAdjacentSquares(loc);
       }
 
-      if (
-        this.automationConfig.autoFlag &&
-        readModel.flagAdjacentSquaresIsSafe(loc)
-      ) {
+      if (readModel.flagAdjacentSquaresIsSafe(loc)) {
         this.model.flagAdjacentSquares(loc);
       }
     }

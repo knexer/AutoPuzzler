@@ -23,39 +23,32 @@ class UnlockConfig {
       ["mulligans2"]
     );
     this.addUnlockable(
-      "autoReveal",
-      "Safe Auto-Reveal",
-      "When clicking a revealed square: reveal adjacent squares, if it's safe to do so. Limited by your automation intelligence level.",
+      "automate0",
+      "Automate 0s",
+      "Clicking a 0 will reveal adjacent squares.",
       3,
       []
     );
     this.addUnlockable(
-      "autoFlag",
-      "Safe Auto-Flag",
-      "When clicking a revealed square: flag adjacent squares, if it's safe to do so. Limited by your automation intelligence level.",
-      3,
-      ["automationLevel1"]
-    );
-    this.addUnlockable(
-      "automationLevel1",
-      "Smart Automation 1",
-      "Click rules can apply to revealed 1s.",
+      "automate1",
+      "Automate 1s",
+      "Clicking a 1 will flag (if there is only one place the mine could be) or reveal (if there is already an adjacent flag).",
       6,
-      ["autoReveal", "autoFlag"]
+      ["automate0"]
     );
     this.addUnlockable(
-      "automationLevel2",
-      "Smart Automation 2",
-      "Click rules can apply to revealed 2s.",
+      "automate2",
+      "Automate 2s",
+      "Clicking a 2 will flag or reveal, if conclusions can be made based on its adjacent squares.",
       12,
-      ["automationLevel1"]
+      ["automate1"]
     );
     this.addUnlockable(
-      "automationLevelMax",
-      "Smart Automation ∞",
-      "Click rules apply to any revealed square.",
+      "automate3",
+      "Automate 3+s",
+      "Clicking any number will flag or reveal, if conclusions can be made based on its adjacent squares.",
       25,
-      ["automationLevel2"]
+      ["automate2"]
     );
     this.addUnlockable(
       "startWithRevealedSquare",
@@ -74,9 +67,9 @@ class UnlockConfig {
     this.addUnlockable(
       "autoClick",
       "Autoclicker",
-      "Apply click rules to four squares per second.",
+      "Automatically click on up to four revealed squares per second.",
       6,
-      ["autoReveal", "autoFlag"]
+      ["automate0"]
     );
     this.addUnlockable(
       "multiBoard1",
