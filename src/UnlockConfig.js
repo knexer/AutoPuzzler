@@ -3,21 +3,21 @@ class UnlockConfig {
     this.unlockables = new Map();
     this.addUnlockable(
       "mulligans1",
-      "Mulligans 1",
+      "Guess Armor 1",
       "Get one mulligan (🛡️) that saves you if you would trigger a mine.",
       3,
       []
     );
     this.addUnlockable(
       "mulligans2",
-      "Mulligans 2",
+      "Guess Armor 2",
       "Get a second mulligan (🛡️).",
-      30,
+      60,
       ["mulligans1"]
     );
     this.addUnlockable(
       "mulligans3",
-      "Mulligans 3",
+      "Guess Armor 3",
       "Get a third mulligan (🛡️).",
       100,
       ["mulligans2"]
