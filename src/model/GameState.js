@@ -37,6 +37,8 @@ export default class GameState {
     this.boardSlots.push(
       new BoardSlot(this.unlocks, (money) => this.addMoney(money))
     );
+
+    this.boardSlots[this.boardSlots.length - 1].onGameCompleted();
   }
 
   handleInterval() {
