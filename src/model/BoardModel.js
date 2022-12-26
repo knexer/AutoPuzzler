@@ -136,6 +136,10 @@ export default class BoardModel {
     ).length;
     return adjacentFlaggable === this.squareAt(loc).adjacentMines;
   }
+
+  value() {
+    return this.mines + (this.mulligans ? this.mulligans : 0);
+  }
 }
 
 export { initBoard, populateBoard, revealStartingSpace };

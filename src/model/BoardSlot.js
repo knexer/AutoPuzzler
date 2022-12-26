@@ -56,7 +56,7 @@ export default class BoardSlot {
     )
       return;
 
-    if (this.boardModel.isWon) this.addMoney(this.boardModel.mines);
+    if (this.boardModel.isWon) this.addMoney(this.boardModel.value());
     this.boardModel = null;
     this.boardPlayer = null;
     this.reverseBoardPlayer = null;

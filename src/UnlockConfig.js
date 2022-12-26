@@ -4,7 +4,7 @@ class UnlockConfig {
     this.addUnlockable(
       "mulligans1",
       "Guess Armor 1",
-      "Get one mulligan (🛡️) that saves you if you would trigger a mine.",
+      "Get one mulligan (🛡️) that saves you if you would trigger a mine. Unused mulligans are worth $1 each if you win.",
       3,
       []
     );

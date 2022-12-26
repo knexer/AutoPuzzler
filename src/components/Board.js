@@ -20,7 +20,7 @@ export default function Board(props) {
       <div className="mulligan-display">
         <Paper elevation={1}>
           <Typography className="mine-counter">
-            {"🛡️".repeat(model.mulligans)}
+            {"🛡️".repeat(model.mulligans) + " (+$" + model.mulligans + ")"}
           </Typography>
         </Paper>
       </div>
@@ -46,7 +46,7 @@ export default function Board(props) {
             variant="contained"
             onClick={() => props.onGameEnd(model, true)}
           >
-            Claim Spoils - ${model.mines}
+            Claim Spoils - ${model.value()}
           </Button>
         </div>
       );
