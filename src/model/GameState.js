@@ -60,6 +60,7 @@ export default class GameState {
     if (this.unlocks.isUnlocked("autoSpeed2")) numIntervalUpgrades++;
     if (this.unlocks.isUnlocked("autoSpeed3")) numIntervalUpgrades++;
     if (this.unlocks.isUnlocked("autoSpeed4")) numIntervalUpgrades++;
+    if (this.unlocks.isUnlocked("autoSpeed5")) numIntervalUpgrades++;
     this.timeoutId = setTimeout(
       () => this.handleInterval(),
       250 / Math.pow(2, numIntervalUpgrades)

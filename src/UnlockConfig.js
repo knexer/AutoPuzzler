@@ -100,6 +100,13 @@ class UnlockConfig {
       ["multiBoard2"]
     );
     this.addUnlockable(
+      "guessWhenStuck",
+      "Anti-Stuck 1",
+      "When the autoclicker gets stuck, guess randomly after five minutes. Delay is reduced by automation speed.",
+      100,
+      ["autoRestart"]
+    );
+    this.addUnlockable(
       "autoSpeed1",
       "Fast Autoclicker 1",
       "Double automation speed.",
@@ -126,6 +133,13 @@ class UnlockConfig {
       "Double automation speed.",
       64,
       ["autoSpeed3"]
+    );
+    this.addUnlockable(
+      "autoSpeed5",
+      "Fast Autoclicker 5",
+      "Ludicrous automation speed (250/s).",
+      256,
+      ["autoSpeed4"]
     );
     this.addUnlockable(
       "twoWorkers",

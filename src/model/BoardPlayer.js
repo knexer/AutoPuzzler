@@ -6,6 +6,8 @@ export default class BoardPlayer {
     this.automationIndex = 0;
     this.automationReverse = reverse;
     this.lastStartedVersion = -1;
+    this.guessVersion = undefined;
+    this.ticksUntilGuess = undefined;
 
     const automationConfig = this.automationConfig;
     this.model.mulligans =
@@ -90,6 +92,8 @@ export default class BoardPlayer {
     if (this.automationIndex === 0) {
       // Nothing to do if the board hasn't changed since we started our previous loop.
       if (this.lastStartedVersion === this.model.version) {
+        // Unless guessing is unlocked!
+        this.handleGuess();
         return;
       }
       this.lastStartedVersion = this.model.version;
@@ -107,5 +111,36 @@ export default class BoardPlayer {
     this.automationIndex =
       (this.automationIndex + 1) % (this.model.width * this.model.height);
     this.model.squareAt(this.automationLoc).automationFocus++;
+  }
+
+  handleGuess() {
+    if (this.reverse || !this.automationConfig.guessWhenStuck) return;
+
+    function getRandomUnmarkedLocation(model) {
+      const loc = {
+        x: Math.floor(Math.random() * model.width),
+        y: Math.floor(Math.random() * model.height),
+      };
+      const square = model.squareAt(loc);
+      if (!square.revealed && !square.flagged) {
+        return loc;
+      } else {
+        return getRandomUnmarkedLocation(model);
+      }
+    }
+
+    // Start the guess timer if this is the first time we've been stuck on this version.
+    if (this.model.version !== this.guessVersion) {
+      this.guessVersion = this.model.version;
+      this.ticksUntilGuess = 4 * 300; // 5 minute delay at 1x speed. 18.75s at 16x speed.
+    }
+
+    this.ticksUntilGuess--;
+
+    if (this.ticksUntilGuess === 0) {
+      // Time to guess.
+      this.handleClick(getRandomUnmarkedLocation(this.model));
+      this.ticksUntilGuess = undefined;
+    }
   }
 }
