@@ -89,6 +89,10 @@ ul {
   background: #cffde0;
 }
 
+.automation-focus-blocked {
+  background: #fdcfcf;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }

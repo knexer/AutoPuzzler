@@ -92,10 +92,14 @@ export default class BoardPlayer {
     if (this.automationIndex === 0) {
       // Nothing to do if the board hasn't changed since we started our previous loop.
       if (this.lastStartedVersion === this.model.version) {
+        this.model.squareAt(this.automationLoc).automationFocusBlocked = true;
+
         // Unless guessing is unlocked!
         this.handleGuess();
         return;
       }
+      this.model.squareAt(this.automationLoc).automationFocusBlocked =
+        undefined;
       this.lastStartedVersion = this.model.version;
     }
 

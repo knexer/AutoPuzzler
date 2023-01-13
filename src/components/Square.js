@@ -35,7 +35,8 @@ export default function Square(props) {
       className={
         "square" +
         (highlight ? " unrevealed-square" : " revealed-square") +
-        (modelSnap.automationFocus ? " automation-focus" : "")
+        (modelSnap.automationFocus ? " automation-focus" : "") +
+        (modelSnap.automationFocusBlocked ? " automation-focus-blocked" : "")
       }
       onClick={interactive ? props.onClick : undefined}
       onContextMenu={(e) => {
