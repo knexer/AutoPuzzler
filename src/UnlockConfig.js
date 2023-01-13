@@ -4,7 +4,7 @@ class UnlockConfig {
     this.addUnlockable(
       "mulligans1",
       "Guess Armor 1",
-      "Get one mulligan (🛡️) that saves you if you would trigger a mine. Unused mulligans are worth $1 each if you win.",
+      "Start each board with one mulligan (🛡️) that saves you if you would trigger a mine. Unused mulligans are worth $1 each if you win.",
       3,
       []
     );
@@ -82,14 +82,14 @@ class UnlockConfig {
       "multiBoard2",
       "Multiboard 2",
       "Add a third board with its own autoclicker.",
-      30,
+      50,
       ["multiBoard1"]
     );
     this.addUnlockable(
       "multiBoard3",
       "Multiboard 3",
       "Add a fourth board with its own autoclicker.",
-      50,
+      80,
       ["multiBoard2"]
     );
     this.addUnlockable(

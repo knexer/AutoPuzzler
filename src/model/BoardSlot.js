@@ -66,10 +66,10 @@ export default class BoardSlot {
     return this.startGame(4, 4, 3);
   }
   startMediumGame() {
-    return this.startGame(6, 6, 6);
+    return this.startGame(6, 6, 7);
   }
   startLargeGame() {
-    return this.startGame(9, 9, 13);
+    return this.startGame(9, 9, 14);
   }
   startLargestUnlockedGame() {
     if (this.unlocks.isUnlocked("boardLarge")) {
