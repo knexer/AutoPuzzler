@@ -77,7 +77,11 @@ export default function AutomationUnlockPanel(props) {
           <Typography variant="h5">Upgrades:</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <List dense disablePadding>
+          <List
+            dense
+            disablePadding
+            style={{ maxHeight: 300, overflow: "auto" }}
+          >
             {availableUnlockables}
           </List>
         </AccordionDetails>
@@ -88,7 +92,11 @@ export default function AutomationUnlockPanel(props) {
             <Typography variant="h5">Purchased Upgrades:</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <List dense disablePadding>
+            <List
+              dense
+              disablePadding
+              style={{ maxHeight: 270, overflow: "auto" }}
+            >
               {purchasedUnlockables}
             </List>
           </AccordionDetails>
