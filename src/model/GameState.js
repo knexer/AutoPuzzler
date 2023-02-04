@@ -57,15 +57,9 @@ export default class GameState {
 
   startInterval() {
     this.stopInterval();
-    let numIntervalUpgrades = 0;
-    if (this.unlocks.isUnlocked("autoSpeed1")) numIntervalUpgrades++;
-    if (this.unlocks.isUnlocked("autoSpeed2")) numIntervalUpgrades++;
-    if (this.unlocks.isUnlocked("autoSpeed3")) numIntervalUpgrades++;
-    if (this.unlocks.isUnlocked("autoSpeed4")) numIntervalUpgrades++;
-    if (this.unlocks.isUnlocked("autoSpeed5")) numIntervalUpgrades++;
     this.timeoutId = setTimeout(
       () => this.handleInterval(),
-      250 / Math.pow(2, numIntervalUpgrades)
+      250 / this.unlocks.automationSpeed()
     );
   }
 

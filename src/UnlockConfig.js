@@ -94,10 +94,24 @@ class UnlockConfig {
     );
     this.addUnlockable(
       "autoRestart",
-      "Auto-restart",
-      "Automatically restart ended boards after ten seconds, at the largest unlocked size.",
+      "Auto-Restart 1",
+      "Automatically restart won boards after 20 seconds, at the largest unlocked size. Does not restart after a loss.",
       50,
       ["multiBoard2"]
+    );
+    this.addUnlockable(
+      "autoRestart2",
+      "Auto-Restart 2",
+      "Auto restart is affected by automation speed.",
+      100,
+      ["autoRestart"]
+    );
+    this.addUnlockable(
+      "autoRestart3",
+      "Auto-Restart 3",
+      "Automatically restart after losing a board. 60 second delay, not affected by automation speed.",
+      100,
+      ["autoRestart2"]
     );
     this.addUnlockable(
       "guessWhenStuck",

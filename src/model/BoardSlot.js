@@ -5,6 +5,9 @@ import BoardModel, {
 } from "./BoardModel.js";
 import BoardPlayer from "./BoardPlayer.js";
 
+// state can be one of:
+// running, waitingToStart, waitingToFinish
+
 export default class BoardSlot {
   constructor(unlocks, addMoney) {
     this.unlocks = unlocks;
@@ -12,13 +15,27 @@ export default class BoardSlot {
     this.boardModel = null;
     this.boardPlayer = null;
     this.reverseBoardPlayer = null;
+    this.state = "waitingToStart";
+    this.ticksToNextState = this.autoRestartDelay();
+  }
+
+  autoRestartDelay(won = true) {
+    const shortDelay = 4 * 10;
+    const longDelay = shortDelay * this.unlocks.automationSpeed();
+    if (won && this.unlocks.isUnlocked("autoRestart2")) return shortDelay;
+    if (!won && this.unlocks.isUnlocked("autoRestart3")) return longDelay;
+    if (won && this.unlocks.isUnlocked("autoRestart")) return longDelay;
+
+    return undefined;
   }
 
   startGame(width, height, mines) {
     if (this.boardModel !== null) return;
 
-    this.boardModel = new BoardModel(width, height, mines, () =>
-      this.onGameCompleted()
+    this.state = "running";
+
+    this.boardModel = new BoardModel(width, height, mines, (won) =>
+      this.onGameCompleted(won)
     );
     initBoard(this.boardModel);
     populateBoard(this.boardModel);
@@ -38,15 +55,9 @@ export default class BoardSlot {
     return this.boardModel;
   }
 
-  onGameCompleted() {
-    if (this.unlocks.isUnlocked("autoRestart")) {
-      setTimeout(() => {
-        this.completeGame();
-        setTimeout(() => {
-          this.startLargestUnlockedGame();
-        }, 5000);
-      }, 5000);
-    }
+  onGameCompleted(won) {
+    this.state = "waitingToFinish";
+    this.ticksToNextState = this.autoRestartDelay(won);
   }
 
   completeGame() {
@@ -60,6 +71,9 @@ export default class BoardSlot {
     this.boardModel = null;
     this.boardPlayer = null;
     this.reverseBoardPlayer = null;
+
+    this.state = "waitingToStart";
+    this.ticksToNextState = this.autoRestartDelay();
   }
 
   startSmallGame() {
@@ -84,5 +98,21 @@ export default class BoardSlot {
   handleInterval() {
     if (this.boardPlayer) this.boardPlayer.handleInterval();
     if (this.reverseBoardPlayer) this.reverseBoardPlayer.handleInterval();
+
+    if (this.unlocks.isUnlocked("autoRestart")) {
+      if (this.state === "waitingToStart") {
+        this.ticksToNextState--;
+        if (this.ticksToNextState <= 0) {
+          this.startLargestUnlockedGame();
+        }
+      } else if (this.state === "running") {
+        // Nothing here
+      } else if (this.state === "waitingToFinish") {
+        this.ticksToNextState--;
+        if (this.ticksToNextState <= 0) {
+          this.completeGame();
+        }
+      }
+    }
   }
 }

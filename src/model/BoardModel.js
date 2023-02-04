@@ -60,7 +60,7 @@ export default class BoardModel {
     });
 
     if (this.isWon || this.isLost) {
-      this.onGameEnd();
+      this.onGameEnd(this.isWon);
     }
 
     this.numFlaggedSquares = this.allSquares().filter(

@@ -38,4 +38,16 @@ export default class UnlockState {
   isUnlocked(key) {
     return this.unlocks.get(key);
   }
+
+  automationSpeed() {
+    let numIntervalUpgrades = 0;
+    const unlocks = this.unlocks;
+    if (unlocks.get("autoSpeed1")) numIntervalUpgrades++;
+    if (unlocks.get("autoSpeed2")) numIntervalUpgrades++;
+    if (unlocks.get("autoSpeed3")) numIntervalUpgrades++;
+    if (unlocks.get("autoSpeed4")) numIntervalUpgrades++;
+    if (unlocks.get("autoSpeed5")) numIntervalUpgrades++;
+
+    return Math.pow(2, numIntervalUpgrades);
+  }
 }
