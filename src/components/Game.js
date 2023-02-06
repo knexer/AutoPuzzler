@@ -18,28 +18,28 @@ export default function Game(props) {
       <div className="boards">
         <BoardPanel
           boardSlot={props.gameState.boardSlots[0]}
+          gameState={props.gameState}
           unlockState={unlockState}
-          onWin={(boardModel) => props.gameState.onWin(boardModel)}
         />
         {unlockStateSnap.isUnlocked("multiBoard1") && (
           <BoardPanel
             boardSlot={props.gameState.boardSlots[1]}
+            gameState={props.gameState}
             unlockState={unlockState}
-            onWin={(boardModel) => props.gameState.onWin(boardModel)}
           />
         )}
         {unlockStateSnap.isUnlocked("multiBoard2") && (
           <BoardPanel
             boardSlot={props.gameState.boardSlots[2]}
+            gameState={props.gameState}
             unlockState={unlockState}
-            onWin={(boardModel) => props.gameState.onWin(boardModel)}
           />
         )}
         {unlockStateSnap.isUnlocked("multiBoard3") && (
           <BoardPanel
             boardSlot={props.gameState.boardSlots[3]}
+            gameState={props.gameState}
             unlockState={unlockState}
-            onWin={(boardModel) => props.gameState.onWin(boardModel)}
           />
         )}
       </div>

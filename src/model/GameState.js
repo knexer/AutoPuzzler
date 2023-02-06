@@ -7,15 +7,18 @@ import UnlockState from "./UnlockState.js";
 // Owns the player's money, the upgrades the player has unlocked, and (shortly) all of the currently going games.
 export default class GameState {
   constructor(deserialized = null) {
-    this.money = deserialized ? deserialized.money : 0;
-    this.unlocks = proxy(
-      new UnlockState(deserialized ? deserialized.unlocks : undefined)
-    );
+    this.money = deserialized?.money ?? 0;
+    this.winStreak = deserialized?.winStreak ?? 0;
+    this.unlocks = proxy(new UnlockState(deserialized?.unlocks));
     this.boardSlots = [];
   }
 
   serialize() {
-    return { money: this.money, unlocks: this.unlocks.serialize() };
+    return {
+      money: this.money,
+      winStreak: this.winStreak,
+      unlocks: this.unlocks.serialize(),
+    };
   }
 
   init() {
@@ -25,17 +28,22 @@ export default class GameState {
     this.addBoardSlot();
   }
 
-  onWin(boardModel) {
-    this.money += boardModel.mines;
+  getComboBonus() {
+    return Math.min(5, Math.floor(this.winStreak / 4));
   }
 
-  addMoney(money) {
-    this.money += money;
+  onGameEnd(boardModel) {
+    if (boardModel.isWon) {
+      this.money += boardModel.value(this.getComboBonus());
+      this.winStreak++;
+    } else {
+      this.winStreak = 0;
+    }
   }
 
   addBoardSlot() {
     this.boardSlots.push(
-      new BoardSlot(this.unlocks, (money) => this.addMoney(money))
+      new BoardSlot(this.unlocks, (boardModel) => this.onGameEnd(boardModel))
     );
 
     this.boardSlots[this.boardSlots.length - 1].onGameCompleted();

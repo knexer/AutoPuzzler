@@ -9,9 +9,9 @@ import BoardPlayer from "./BoardPlayer.js";
 // running, waitingToStart, waitingToFinish
 
 export default class BoardSlot {
-  constructor(unlocks, addMoney) {
+  constructor(unlocks, notifyGameEnd) {
     this.unlocks = unlocks;
-    this.addMoney = addMoney;
+    this.notifyGameEnd = notifyGameEnd;
     this.boardModel = null;
     this.boardPlayer = null;
     this.reverseBoardPlayer = null;
@@ -29,7 +29,7 @@ export default class BoardSlot {
     return undefined;
   }
 
-  startGame(width, height, mines) {
+  startGame(width, height, mines, comboBonusMult) {
     if (this.boardModel !== null) return;
 
     this.state = "running";
@@ -52,6 +52,7 @@ export default class BoardSlot {
       true
     );
 
+    this.boardModel.comboBonusMult = comboBonusMult;
     return this.boardModel;
   }
 
@@ -67,7 +68,7 @@ export default class BoardSlot {
     )
       return;
 
-    if (this.boardModel.isWon) this.addMoney(this.boardModel.value());
+    this.notifyGameEnd(this.boardModel);
     this.boardModel = null;
     this.boardPlayer = null;
     this.reverseBoardPlayer = null;
@@ -77,13 +78,13 @@ export default class BoardSlot {
   }
 
   startSmallGame() {
-    return this.startGame(4, 4, 3);
+    return this.startGame(4, 4, 3, 0);
   }
   startMediumGame() {
-    return this.startGame(6, 6, 7);
+    return this.startGame(6, 6, 7, 1);
   }
   startLargeGame() {
-    return this.startGame(9, 9, 14);
+    return this.startGame(9, 9, 14, 2);
   }
   startLargestUnlockedGame() {
     if (this.unlocks.isUnlocked("boardLarge")) {

@@ -46,7 +46,7 @@ export default function Board(props) {
             variant="contained"
             onClick={() => props.onGameEnd(model, true)}
           >
-            Claim Spoils - ${model.value()}
+            Claim Spoils - ${model.value(props.comboBonus)}
           </Button>
         </div>
       );

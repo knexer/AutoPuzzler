@@ -175,6 +175,14 @@ ul {
   padding-right: 10px;
 }
 
+.combo-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 10px;
+  align-items: center;
+}
+
 .game-info {
   display: flex;
   flex-direction: column;
